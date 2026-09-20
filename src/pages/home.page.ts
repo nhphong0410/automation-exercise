@@ -2,9 +2,11 @@ import { expect, type Locator, type Page } from '@playwright/test';
 
 export class HomePage {
   readonly productsLink: Locator;
+  readonly signupLoginLink: Locator;
 
   constructor(private readonly page: Page) {
     this.productsLink = page.getByRole('link', { name: /products/i });
+    this.signupLoginLink = page.getByRole('link', { name: /signup \/ login/i });
   }
 
   async open(): Promise<void> {
@@ -21,6 +23,6 @@ export class HomePage {
   }
 
   async openLogin(): Promise<void> {
-    await this.page.getByRole('link', { name: /signup \/ login/i }).click();
+    await this.signupLoginLink.click();
   }
 }

@@ -43,6 +43,12 @@ Use baseline valid registration data and two parameterized mobile values: the di
 
 Both supported mobile-number boundary values are accepted and registration succeeds.
 
+## Observed SUT Behavior
+
+The SUT does not expose `minlength` or `maxlength` on the mobile-number input, so no
+enforced valid length boundaries are available for this case. Invalid-length checks
+should be covered under TC-IAM-03.
+
 ## Cleanup And Failure Handling
 
 Clean up every account in `finally`; fall back to `/api/deleteAccount` and assert HTTP `200` / JSON `responseCode` `200` if required.

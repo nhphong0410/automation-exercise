@@ -1,0 +1,94 @@
+{
+  "calendarBoundaryDates": [
+    {
+      "suffix": "a",
+      "dateOfBirth": {
+        "day": "1",
+        "month": "January",
+        "year": "1990"
+      }
+    },
+    {
+      "suffix": "b",
+      "dateOfBirth": {
+        "day": "31",
+        "month": "January",
+        "year": "1990"
+      }
+    },
+    {
+      "suffix": "c",
+      "dateOfBirth": {
+        "day": "29",
+        "month": "February",
+        "year": "1992"
+      }
+    }
+  ],
+  "pairwiseRegistrationRows": [
+    {
+      "name": "Mr India baseline both subscriptions",
+      "title": "Mr",
+      "country": "India",
+      "dateOfBirth": { "day": "15", "month": "January", "year": "1990" },
+      "newsletter": true,
+      "specialOffers": true
+    },
+    {
+      "name": "Mr United States leap day no subscriptions",
+      "title": "Mr",
+      "country": "United States",
+      "dateOfBirth": { "day": "29", "month": "February", "year": "1992" },
+      "newsletter": false,
+      "specialOffers": false
+    },
+    {
+      "name": "Mrs India leap day special offers only",
+      "title": "Mrs",
+      "country": "India",
+      "dateOfBirth": { "day": "29", "month": "February", "year": "1992" },
+      "newsletter": false,
+      "specialOffers": true
+    },
+    {
+      "name": "Mrs United States baseline newsletter only",
+      "title": "Mrs",
+      "country": "United States",
+      "dateOfBirth": { "day": "15", "month": "January", "year": "1990" },
+      "newsletter": true,
+      "specialOffers": false
+    },
+    {
+      "name": "Mr India baseline no subscriptions",
+      "title": "Mr",
+      "country": "India",
+      "dateOfBirth": { "day": "15", "month": "January", "year": "1990" },
+      "newsletter": false,
+      "specialOffers": false
+    },
+    {
+      "name": "Mr United States leap day newsletter only",
+      "title": "Mr",
+      "country": "United States",
+      "dateOfBirth": { "day": "29", "month": "February", "year": "1992" },
+      "newsletter": true,
+      "specialOffers": false
+    },
+    {
+      "name": "Mrs India leap day both subscriptions",
+      "title": "Mrs",
+      "country": "India",
+      "dateOfBirth": { "day": "29", "month": "February", "year": "1992" },
+      "newsletter": true,
+      "specialOffers": true
+    },
+    {
+      "name": "Mrs United States baseline special offers only",
+      "title": "Mrs",
+      "country": "United States",
+      "dateOfBirth": { "day": "15", "month": "January", "year": "1990" },
+      "newsletter": false,
+      "specialOffers": true
+    }
+  ]
+}
