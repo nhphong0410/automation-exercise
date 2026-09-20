@@ -1,0 +1,20 @@
+{
+  "name": "automation-exercise-playwright",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:e2e": "playwright test src/tests/e2e",
+    "test:iam": "playwright test src/tests/e2e/iam",
+    "test:api": "playwright test src/tests/api",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^26.6.2",
+    "typescript": "^5.9.0"
+  }
+}
