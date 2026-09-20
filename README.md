@@ -74,3 +74,11 @@ The Playwright configuration also enables ad-network blocking through the shared
 ## Documentation
 
 The high-level strategy is documented in [docs/automation-exercise-test-design.md](docs/automation-exercise-test-design.md). Area 1 has a condition index at [docs/area-1/tc-iam-01.md](docs/area-1/tc-iam-01.md), with one detailed Markdown file for each derived registration test case.
+
+## CI/CD
+
+GitHub Actions is configured in `.github/workflows/playwright.yml`:
+
+- Pull requests targeting `main` run the `@smoke` test suite.
+- Pushes to `main` run the complete Playwright suite.
+- Playwright reports and test results are uploaded as workflow artifacts, including when tests fail.
