@@ -1,85 +1,85 @@
-name: Playwright Tests
+# name: Playwright Tests
 
-on:
-  pull_request:
-    branches:
-      # - main
-  push:
-    branches:
-      # - main
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#   push:
+#     branches:
+#       - main
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
-concurrency:
-  group: playwright-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+# concurrency:
+#   group: playwright-${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: true
 
-jobs:
-  smoke:
-    name: Smoke tests
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+# jobs:
+#   smoke:
+#     name: Smoke tests
+#     if: github.event_name == 'pull_request'
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 24
+#           cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+#       - name: Install dependencies
+#         run: npm ci
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+#       - name: Install Playwright Chromium
+#         run: npx playwright install --with-deps chromium
 
-      - name: Run smoke tests
-        run: npm run test:smoke
+#       - name: Run smoke tests
+#         run: npm run test:smoke
 
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-smoke-report
-          path: |
-            playwright-report/
-            test-results/
-          if-no-files-found: ignore
+#       - name: Upload Playwright report
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: playwright-smoke-report
+#           path: |
+#             playwright-report/
+#             test-results/
+#           if-no-files-found: ignore
 
-  full:
-    name: Full test suite
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+#   full:
+#     name: Full test suite
+#     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 24
+#           cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+#       - name: Install dependencies
+#         run: npm ci
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+#       - name: Install Playwright Chromium
+#         run: npx playwright install --with-deps chromium
 
-      - name: Run full test suite
-        run: npm test
+#       - name: Run full test suite
+#         run: npm test
 
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-full-report
-          path: |
-            playwright-report/
-            test-results/
-          if-no-files-found: ignore
+#       - name: Upload Playwright report
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: playwright-full-report
+#           path: |
+#             playwright-report/
+#             test-results/
+#           if-no-files-found: ignore
