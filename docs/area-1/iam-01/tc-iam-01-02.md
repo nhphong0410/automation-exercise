@@ -30,8 +30,6 @@ Verify registration succeeds when the valid alternate title `Mrs` is selected.
 
 Use the baseline registration data from TC-IAM-01. Generate the name, email, mobile number, and password from the current UTC timestamp and worker index. Set title to `Mrs`; use `15 January 1990`, valid profile data, and select both subscription checkboxes.
 
-## Steps And Expected Results
-
 ## Test Steps And Expected Results
 
 1. Open `/` and verify the home page title and `Signup / Login` link.

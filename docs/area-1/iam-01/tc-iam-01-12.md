@@ -39,8 +39,6 @@ Generate rows across these valid factors:
 
 Use a pairwise generator to produce the smallest set that covers every pair of factor values. Store the generated rows as test data so failures are reproducible.
 
-## Steps And Expected Results
-
 ## Test Steps And Expected Results
 
 For every generated row:
