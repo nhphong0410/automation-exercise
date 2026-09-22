@@ -8,8 +8,8 @@
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [**TC-IAM-02-01**](tc-iam-02-01.md) | Equivalence Partitioning | Baseline duplicate email: Exact match of pre-existing account email with original casing and matching name | Submission is blocked, page remains on `/login`, and `"Email Address already exist!"` error banner is displayed | P1 | No |
 | [**TC-IAM-02-02**](tc-iam-02-02.md) | Equivalence Partitioning | Duplicate email with an alternate/different name entered in the `Name` field | Submission is blocked, verifying uniqueness validation is enforced strictly against the email address regardless of username | P1 | No |
-| [**TC-IAM-02-05**](tc-iam-02-05.md) | State Transition | Duplicate rejection recovery: Blocked attempt $\rightarrow$ User edits input to a unique email $\rightarrow$ Re-submits | System transitions successfully from the rejected state to Step 2 (`Enter Account Information`) upon receiving a unique email | P1 | No |
-| [**TC-IAM-02-06**](tc-iam-02-06.md) | State Transition | Account lifecycle reuse: Seed account $\rightarrow$ Duplicate signup fails $\rightarrow$ Delete account via API $\rightarrow$ Retry signup with same email | Signup succeeds and advances to Step 2, verifying that deleted email addresses are released and reusable | P2 | No |
+| [**TC-IAM-02-03**](tc-iam-02-03.md) | State Transition | Duplicate rejection recovery: Blocked attempt $\rightarrow$ User edits input to a unique email $\rightarrow$ Re-submits | System transitions successfully from the rejected state to Step 2 (`Enter Account Information`) upon receiving a unique email | P1 | No |
+| [**TC-IAM-02-04**](tc-iam-02-04.md) | State Transition | Account lifecycle reuse: Seed account $\rightarrow$ Duplicate signup fails $\rightarrow$ Delete account via API $\rightarrow$ Retry signup with same email | Signup succeeds and advances to Step 2, verifying that deleted email addresses are released and reusable | P2 | No |
 
 ### Technique Boundaries
 
