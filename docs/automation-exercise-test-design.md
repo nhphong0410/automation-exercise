@@ -45,7 +45,6 @@ This High-Level Test Design outlines the core test areas, test conditions, prior
 | **TC-CAT-05** | Filter products by Category and Subcategory (e.g., Women > Dress) | Filtering | P1 |
 | **TC-CAT-06** | Filter products by Brand (e.g., Polo, H&M, Madame) | Filtering | P1 |
 | **TC-CAT-07** | Submit a product review from PDP and verify success alert | Functional | P2 |
-| **TC-CAT-08** | Verify "Recommended Items" carousel rendering and interaction | UI / Component | P2 |
 
 ---
 
