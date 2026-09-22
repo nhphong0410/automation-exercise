@@ -37,12 +37,13 @@ Verify that `GET /api/productsList` returns a successful HTTP response and a val
 2. Capture the HTTP status and full JSON response.
 3. Assert the HTTP status is `200`.
 4. Assert the JSON `responseCode` is `200`.
-5. Validate the response contains a top-level products array or equivalent response body structure.
-6. Validate each product object includes expected fields such as product name, price, category, and ID if present in the SUT payload.
+5. Assert the response contains a top-level `products` array.
+6. Assert the `products` array is non-empty.
+7. Assert at least one product object includes `id` (number), `name` (string), and `price` (string).
 
 ## Expected Result
 
-The products endpoint responds successfully and returns a schema-consistent payload that represents the catalog inventory.
+The products endpoint responds successfully and returns a non-empty `products` array where product entries include `id` (number), `name` (string), and `price` (string).
 
 ## Cleanup And Failure Handling
 

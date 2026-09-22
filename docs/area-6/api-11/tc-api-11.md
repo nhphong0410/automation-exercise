@@ -7,7 +7,7 @@
 | Test Case ID | Design Technique | Variation | Expected Result | Priority | Smoke |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [**TC-API-11-01**](tc-api-11-01.md) | Data Retrieval | GET `/api/getUserDetailByEmail` with a known email | HTTP status is `200`; JSON `responseCode` is `200`; payload contains the matching user record | P1 | No |
-| [**TC-API-11-02**](tc-api-11-02.md) | Data Retrieval / Negative | GET `/api/getUserDetailByEmail` with a non-existent or malformed email | API rejects the lookup with a contract-level failure rather than returning a false positive user record | P2 | No |
+| [**TC-API-11-02**](tc-api-11-02.md) | Data Retrieval / Negative | GET `/api/getUserDetailByEmail` with unknown-email and malformed-email variants | Unknown email returns HTTP `200` + JSON `responseCode: 404`; malformed email returns HTTP `200` + JSON `responseCode: 400`; no user record is returned | P2 | No |
 
 ### Technique Boundaries
 

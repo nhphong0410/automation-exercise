@@ -33,9 +33,9 @@ Verify that the page can be returned to the top without needing the dedicated ar
 
 1. Navigate to a content-rich page such as the catalog or another long-form page.
 2. Scroll down to a lower point in the page.
-3. Trigger a page return to the top through the normal page behavior available without using the arrow button.
+3. Press the `Home` key (without clicking the arrow button) to return to the top of the page.
 4. Observe the page after the scroll action.
-5. Verify the page has returned to the top section or default anchor state.
+5. Verify the page has returned to the top (`window.scrollY` equals `0` or near `0`).
 6. Confirm the header is visible and the page is no longer positioned away from the top.
 
 ## Expected Result

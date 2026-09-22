@@ -1,4 +1,4 @@
-# TC-API-11-02 - Non-Existent or Malformed Email Should Reject User Lookup
+# TC-API-11-02 - Unknown and Malformed Email Inputs Should Reject User Lookup
 
 ## Metadata
 
@@ -17,30 +17,30 @@
 
 ## Objective
 
-Verify that querying `/api/getUserDetailByEmail` with a non-existent or malformed email returns a contract-level failure instead of incorrectly returning user data.
+Verify deterministic rejection contracts for two separate lookup variants: unknown email and malformed email format.
 
 ## Preconditions
 
 1. The SUT is available.
 2. The user lookup endpoint is reachable.
-3. A non-existent or malformed email value is prepared.
+3. Non-existent and malformed email test values are prepared.
 
 ## Test Data
 
 - Endpoint: `GET /api/getUserDetailByEmail`
-- Values: unknown email or invalid email format
-- Expected result: lookup failure and no false-positive user record returned
+- Variant A (unknown email): value is syntactically valid but not registered → Expected HTTP `200`, JSON `responseCode: 404`
+- Variant B (malformed email): value is syntactically invalid email format → Expected HTTP `200`, JSON `responseCode: 400`
 
 ## Test Steps And Expected Results
 
-1. Send a request to `/api/getUserDetailByEmail` with a non-existent or malformed email.
-2. Capture the response payload and status.
-3. Assert the lookup is rejected rather than treated as a valid user retrieval.
-4. Confirm no user record is returned for the invalid input.
+1. Execute Variant A by sending `GET /api/getUserDetailByEmail` with a non-existent but valid-format email; assert HTTP `200` and JSON `responseCode: 404`.
+2. Execute Variant B by sending `GET /api/getUserDetailByEmail` with a malformed email value; assert HTTP `200` and JSON `responseCode: 400`.
+3. For both variants, confirm no user record is returned.
+4. Capture the full payload for each variant if the contract differs from the expected response code.
 
 ## Expected Result
 
-The API handles invalid lookup values as a failed data retrieval and does not return misleading user details.
+Both variants are rejected with deterministic response codes, and no false-positive user details are returned.
 
 ## Cleanup And Failure Handling
 

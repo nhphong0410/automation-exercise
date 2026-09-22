@@ -1,4 +1,4 @@
-# TC-API-09-02 - Duplicate Email or Missing Form-Data Should Reject Account Creation
+# TC-API-09-02 - Duplicate Email and Missing Form-Data Should Reject Account Creation
 
 ## Metadata
 
@@ -17,30 +17,30 @@
 
 ## Objective
 
-Verify that creating an account with an already-registered email or with missing required form-data is rejected rather than creating a second account or accepting incomplete input.
+Verify deterministic rejection contracts for two separate negative variants: duplicate email and missing required form-data.
 
 ## Preconditions
 
 1. The SUT is available.
-2. An account already exists for the duplicate-email test.
-3. The API can accept a form-data payload for rejected account creation.
+2. An account already exists for the duplicate-email variant.
+3. The API can accept a form-data payload for negative account-creation requests.
 
 ## Test Data
 
 - Endpoint: `POST /api/createAccount`
-- Duplicate email or incomplete payload values
-- Expected behavior: validation or duplicate-account rejection
+- Variant A (duplicate email): use an already-registered email → Expected HTTP `200`, JSON `responseCode: 400`, message indicates duplicate email rejection
+- Variant B (missing required field): omit at least one required form-data field (for example `email`) → Expected HTTP `200`, JSON `responseCode: 400`, message indicates bad request/missing parameter
 
 ## Test Steps And Expected Results
 
-1. Send a `POST` request to `/api/createAccount` using an email that already exists or omit required form-data.
-2. Capture the HTTP status and JSON response.
-3. Assert that the request is rejected as invalid or duplicate.
-4. Confirm no duplicate account is created and the API does not report success.
+1. Execute Variant A by sending `POST /api/createAccount` with an already-registered email; assert HTTP `200` and JSON `responseCode: 400`.
+2. Execute Variant B by sending `POST /api/createAccount` with missing required form-data; assert HTTP `200` and JSON `responseCode: 400`.
+3. For both variants, capture and assert the failure message matches the variant contract (duplicate-account rejection for Variant A, missing-parameter/bad-request rejection for Variant B).
+4. Confirm no new account is created for either variant.
 
 ## Expected Result
 
-The API rejects the invalid account creation request and reports a contract-level failure instead of creating a duplicate or incomplete account.
+Both negative variants are rejected with their defined failure contracts, and the API does not create duplicate or incomplete accounts.
 
 ## Cleanup And Failure Handling
 

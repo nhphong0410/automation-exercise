@@ -17,7 +17,7 @@
 
 ## Objective
 
-Verify that when multiple distinct products are added with various quantities, every individual row's total equals its `Unit Price * Quantity`.
+Verify that when multiple distinct products are added with various quantities, every individual row's total equals its `Unit Price * Quantity`, and the aggregate cart subtotal matches the sum of all row totals.
 
 ## Preconditions
 
@@ -36,10 +36,11 @@ Verify that when multiple distinct products are added with various quantities, e
 3. Add Product 2 with quantity `3` (via PDP).
 4. Navigate to `https://automationexercise.com/view_cart`.
 5. For each product row, verify that `Item Total === Unit Price * Quantity`.
+6. Verify that the cart subtotal/total equals the sum of all row item totals.
 
 ## Expected Result
 
-All cart rows accurately calculate and display row totals corresponding to their respective unit prices and quantities.
+All cart rows accurately calculate and display row totals corresponding to their respective unit prices and quantities, and the cart subtotal/total matches the sum of those row totals.
 
 ## Cleanup And Failure Handling
 

@@ -1,4 +1,4 @@
-# TC-API-10-02 - Deleting a Non-Existent Account Should Be Treated as Safe Cleanup, Not a Hard Failure
+# TC-API-10-02 - Deleting a Non-Existent Account Returns a Deterministic Not-Found Contract
 
 ## Metadata
 
@@ -17,7 +17,7 @@
 
 ## Objective
 
-Verify that deleting a non-existent or already-removed account is handled as a safe cleanup condition rather than as an unexpected system failure.
+Verify that deleting a non-existent or already-removed account returns the exact not-found API contract.
 
 ## Preconditions
 
@@ -29,18 +29,21 @@ Verify that deleting a non-existent or already-removed account is handled as a s
 
 - Endpoint: `DELETE /api/deleteAccount`
 - Account identifier: non-existent email or already-removed account
-- Expected behavior: safe idempotent cleanup or contract-level no-op handling
+- Expected HTTP status: `200`
+- Expected JSON `responseCode`: `404`
+- Expected JSON message: not-found account deletion failure
 
 ## Test Steps And Expected Results
 
 1. Send a `DELETE` request for an account that no longer exists.
 2. Capture the HTTP status and JSON payload.
-3. Verify the result is handled as a safe cleanup condition without failing the suite unexpectedly.
-4. Ensure the response is interpreted consistently as a no-op or not-found cleanup state.
+3. Assert the HTTP status is `200`.
+4. Assert the JSON `responseCode` is `404`.
+5. Assert the JSON message reports not-found account deletion failure.
 
 ## Expected Result
 
-The API does not block the teardown flow simply because the account is already absent; it handles the request defensively and keeps the cleanup process deterministic.
+The API returns HTTP `200` with JSON `responseCode: 404` and a not-found failure message for absent-account deletion requests.
 
 ## Cleanup And Failure Handling
 

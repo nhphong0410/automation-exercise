@@ -7,7 +7,7 @@
 | Test Case ID | Design Technique | Variation | Expected Result | Priority | Smoke |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [**TC-API-09-01**](tc-api-09-01.md) | Account Creation | POST `/api/createAccount` with valid form-data | HTTP status is `200`; JSON `responseCode` is `201`; account is created and is available for follow-up login or teardown | P0 | Yes |
-| [**TC-API-09-02**](tc-api-09-02.md) | Account Creation / Negative | POST `/api/createAccount` with an already-registered email or missing required form-data | API rejects the request with a validation or duplicate-account response instead of creating a second account | P1 | No |
+| [**TC-API-09-02**](tc-api-09-02.md) | Account Creation / Negative | POST `/api/createAccount` with duplicate email and missing-field variants | Both variants return HTTP `200` + JSON `responseCode: 400` with variant-specific failure messages; no account is created | P1 | No |
 
 ### Technique Boundaries
 

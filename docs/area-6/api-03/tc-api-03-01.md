@@ -37,11 +37,13 @@ Verify that `GET /api/brandsList` responds successfully and that the payload con
 2. Capture the HTTP response and response JSON.
 3. Assert the HTTP status is `200`.
 4. Assert the JSON `responseCode` is `200`.
-5. Validate the brands payload is an array with at least expected entries or a valid structure according to the API contract.
+5. Assert the response contains a top-level `brands` array.
+6. Assert the `brands` array is non-empty (`length > 0`).
+7. Assert at least one brand object includes `id` (number) and `brand` (string).
 
 ## Expected Result
 
-The API returns the available brand list successfully and the response structure is valid for downstream UI and functional validation.
+The API returns a successful response with a non-empty `brands` array, and brand entries include `id` (number) and `brand` (string).
 
 ## Cleanup And Failure Handling
 

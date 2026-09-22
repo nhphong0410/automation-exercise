@@ -7,7 +7,7 @@
 | Test Case ID | Design Technique | Variation | Expected Result | Priority | Smoke |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [**TC-API-10-01**](tc-api-10-01.md) | Teardown / Account Lifecycle | DELETE `/api/deleteAccount` for an existing user | HTTP status is `200`; JSON `responseCode` is `200`; account is successfully removed from the system | P0 | Yes |
-| [**TC-API-10-02**](tc-api-10-02.md) | Teardown / Negative | DELETE `/api/deleteAccount` for a non-existent or already-removed account | API handles the condition as a safe cleanup failure or idempotent no-op instead of failing the suite unexpectedly | P2 | No |
+| [**TC-API-10-02**](tc-api-10-02.md) | Teardown / Negative | DELETE `/api/deleteAccount` for a non-existent or already-removed account | HTTP status is `200`; JSON `responseCode` is `404`; response message indicates account not found | P2 | No |
 
 ### Technique Boundaries
 

@@ -1,4 +1,4 @@
-# TC-API-05-02 - Empty or Special-Character Search Input Should Fail Validation or Return a Negative Search Result
+# TC-API-05-02 - Invalid Search Inputs Should Return Deterministic Negative Contracts
 
 ## Metadata
 
@@ -17,30 +17,31 @@
 
 ## Objective
 
-Verify that an empty, whitespace-only, or special-character-only search value is handled as a negative search case rather than as a successful product-search operation.
+Verify deterministic negative contracts for invalid `search_product` inputs: empty string, whitespace-only string, and special-character-only string.
 
 ## Preconditions
 
 1. The SUT is available.
 2. The search endpoint is reachable.
-3. The test can send an empty or invalid `search_product` value.
+3. The test can send controlled invalid `search_product` values.
 
 ## Test Data
 
 - Endpoint: `POST /api/searchProduct`
-- Parameter values: empty string, whitespace-only string, or special-character-only string
-- Expected behavior: validation failure or explicit negative search result
+- Variant A input: empty string (`""`) → Expected HTTP `200`, JSON `responseCode: 400`
+- Variant B input: whitespace-only string (`"   "`) → Expected HTTP `200`, JSON `responseCode: 400`
+- Variant C input: special-character-only string (`"@@@"`) → Expected HTTP `200`, JSON `responseCode: 200`, `products` is an empty array
 
 ## Test Steps And Expected Results
 
-1. Send a `POST` request to `/api/searchProduct` with an empty or invalid search value.
-2. Capture the HTTP and JSON responses.
-3. Assert that the result is treated as a negative search or validation failure.
-4. Verify the API does not accept the invalid input as a valid product search.
+1. Execute Variant A by sending `POST /api/searchProduct` with `search_product=""`; assert HTTP `200` and JSON `responseCode: 400`.
+2. Execute Variant B by sending `POST /api/searchProduct` with `search_product="   "`; assert HTTP `200` and JSON `responseCode: 400`.
+3. Execute Variant C by sending `POST /api/searchProduct` with `search_product="@@@"`; assert HTTP `200`, JSON `responseCode: 200`, and `products.length === 0`.
+4. Capture the full JSON response for each variant and fail if any variant returns a success contract inconsistent with its expected outcome.
 
 ## Expected Result
 
-The API handles invalid search input safely and does not falsely report a successful search when the keyword is empty or unusable.
+Each invalid-input variant returns its documented deterministic negative contract, and none of the variants produce a false-positive successful product match.
 
 ## Cleanup And Failure Handling
 
@@ -49,8 +50,8 @@ The API handles invalid search input safely and does not falsely report a succes
 
 ## Automation Notes
 
-- Keep the input invalid but deterministic so the negative result is repeatable.
-- Validate the negative contract precisely instead of equating all non-200 codes with success.
+- Keep each variant isolated and asserted independently to avoid mixed-oracle outcomes.
+- Assert both HTTP status and JSON/body contracts per variant.
 
 ## Traceability
 

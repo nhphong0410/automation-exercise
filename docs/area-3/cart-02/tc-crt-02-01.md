@@ -17,7 +17,7 @@
 
 ## Objective
 
-Verify that a user can set a custom quantity (>1, e.g., `3`) on the Product Detail Page (PDP) and add the product to the shopping cart, confirming that the cart displays the correct quantity.
+Verify that a user can set a custom quantity (>1, e.g., `3`) on the Product Detail Page (PDP) and add the product to the shopping cart, confirming that the cart displays the correct quantity and line subtotal (`Unit Price * Quantity`).
 
 ## Preconditions
 
@@ -37,10 +37,11 @@ Verify that a user can set a custom quantity (>1, e.g., `3`) on the Product Deta
 4. Click the `Add to cart` button.
 5. Click `View Cart` in the success modal or navigate to `https://automationexercise.com/view_cart`.
 6. Verify that the cart table displays the product with quantity `3`.
+7. Verify that the product line subtotal equals `Unit Price * 3`.
 
 ## Expected Result
 
-Setting a custom quantity on the PDP successfully adds the specified quantity to the shopping cart.
+Setting a custom quantity on the PDP successfully adds the specified quantity to the shopping cart and displays the correct line subtotal.
 
 ## Cleanup And Failure Handling
 

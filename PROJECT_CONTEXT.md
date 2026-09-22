@@ -27,10 +27,22 @@ The current implementation focuses on the IAM registration flow and a smoke API 
 ├── tsconfig.json
 ├── docs/
 │   ├── automation-exercise-test-design.md
-│   └── area-1/
-│       └── iam-01/
-│           ├── tc-iam-01.md
-│           └── tc-iam-01-01.md ...
+│   ├── area-1/
+│   │   └── iam-01/
+│   │       ├── tc-iam-01.md
+│   │       └── tc-iam-01-01.md ...
+│   ├── area-3/
+│   │   ├── cart-01/ ... cart-07/
+│   │   └── tc-crt-*.md test case sets
+│   ├── area-4/
+│   │   ├── ord-01/ ... ord-08/
+│   │   └── tc-ord-*.md test case sets
+│   ├── area-5/
+│   │   ├── utl-01/ ... utl-06/
+│   │   └── tc-utl-*.md test case sets
+│   └── area-6/
+│       ├── api-01/ ... api-14/
+│       └── tc-api-*.md test case sets
 ├── src/
 │   ├── components/
 │   ├── data/

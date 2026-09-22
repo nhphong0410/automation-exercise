@@ -1,4 +1,4 @@
-# TC-API-14-02 - Missing Fields, Invalid Identifiers, or Unknown Account Should Reject the Account Update
+# TC-API-14-02 - Missing Fields, Malformed Identifier, and Unknown Account Variants Should Reject Update
 
 ## Metadata
 
@@ -17,30 +17,31 @@
 
 ## Objective
 
-Verify that updating an account with missing required fields, malformed identifiers, or an unknown account is rejected and does not silently alter the stored account data.
+Verify deterministic rejection contracts for three distinct update-failure variants: missing required fields, malformed identifier, and unknown account.
 
 ## Preconditions
 
 1. The SUT is available.
 2. The update endpoint is reachable.
-3. A malformed update payload or unknown account identifier is prepared.
+3. Test payloads are prepared for missing-field, malformed-identifier, and unknown-account variants.
 
 ## Test Data
 
 - Endpoint: `PUT /api/updateAccount`
-- Invalid payload: missing required field, malformed identifier, or unknown account
-- Expected result: validation or not-found failure with no account mutation
+- Variant A (missing required field) → Expected HTTP `200`, JSON `responseCode: 400`
+- Variant B (malformed identifier, e.g., invalid email format) → Expected HTTP `200`, JSON `responseCode: 400`
+- Variant C (unknown account with valid payload format) → Expected HTTP `200`, JSON `responseCode: 404`
 
 ## Test Steps And Expected Results
 
-1. Send a `PUT` request to `/api/updateAccount` with a missing field or malformed identifier.
-2. Capture the HTTP status and JSON payload.
-3. Assert the request is rejected rather than treated as a successful update.
-4. Confirm that stored account data is not modified by the failed request.
+1. Execute Variant A by sending `PUT /api/updateAccount` with missing required field(s); assert HTTP `200` and JSON `responseCode: 400`.
+2. Execute Variant B by sending `PUT /api/updateAccount` with a malformed identifier; assert HTTP `200` and JSON `responseCode: 400`.
+3. Execute Variant C by sending `PUT /api/updateAccount` with a valid-format payload for an unknown account; assert HTTP `200` and JSON `responseCode: 404`.
+4. For all variants, confirm no account record is created or modified.
 
 ## Expected Result
 
-The API rejects the invalid update request, reports the contract-level failure, and does not mutate the account data when the data is incomplete or the account is unknown.
+All three negative variants return their expected deterministic failure codes, and no account mutation occurs.
 
 ## Cleanup And Failure Handling
 

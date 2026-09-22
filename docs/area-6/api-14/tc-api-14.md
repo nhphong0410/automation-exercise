@@ -7,7 +7,7 @@
 | Test Case ID | Design Technique | Variation | Expected Result | Priority | Smoke |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [**TC-API-14-01**](tc-api-14-01.md) | Account Update | PUT `/api/updateAccount` with valid account information | HTTP status is `200`; JSON `responseCode` is `200`; account record is updated successfully | P1 | No |
-| [**TC-API-14-02**](tc-api-14-02.md) | Account Update / Negative | PUT `/api/updateAccount` with missing required fields, malformed identifiers, or an unknown account | API rejects the mutation with a validation or not-found failure without changing the stored account details | P2 | No |
+| [**TC-API-14-02**](tc-api-14-02.md) | Account Update / Negative | PUT `/api/updateAccount` with missing-field, malformed-identifier, and unknown-account variants | Missing/malformed variants return HTTP `200` + JSON `responseCode: 400`; unknown-account variant returns HTTP `200` + JSON `responseCode: 404`; no account mutation occurs | P2 | No |
 
 ### Technique Boundaries
 
