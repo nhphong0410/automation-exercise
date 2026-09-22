@@ -17,7 +17,7 @@
 
 ## Objective
 
-Verify that a user who is already authenticated can log in before checkout, complete a purchase, and see the confirmation page after submitting valid payment details.
+Verify that a user with a valid existing account can log in before checkout, complete a purchase, and see the confirmation page after submitting valid payment details.
 
 ## Preconditions
 
