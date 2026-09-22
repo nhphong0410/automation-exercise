@@ -151,3 +151,57 @@ This High-Level Test Design outlines the core test areas, test conditions, prior
 | **Smoke Suite** | Test cases identified as smoke in their test-condition and detailed test-case documents | On every Pull Request | < 3 mins |
 | **API Suite** | TC-API-01 through TC-API-14 | On PR & Hourly Healthcheck | < 1 min |
 | **Regression Suite** | All P0 + P1 + P2 test conditions across all modules | Nightly Scheduled Run | < 12 mins |
+
+---
+
+## 5. Documentation Review, Priority Discipline, and Automation Readiness
+
+### 5.1 Scope Discipline
+
+The design set should remain focused on test conditions that have real value for product risk, contract validation, or user-critical workflows. Low-value exploratory variants should not be promoted into the master design unless they add measurable regression prevention or broaden a validated boundary condition.
+
+### 5.2 Review Standard for Derived Cases
+
+Each derived case should satisfy at least one of the following criteria:
+
+1. Covers a distinct equivalence class, boundary, or valid state transition.
+2. Protects a user-critical workflow or a contract-sensitive API behavior.
+3. Verifies a regression-prone scenario with a unique assertion or UI state.
+4. Represents an explicit negative case for a validated failure path.
+
+If a candidate case does not meet one of these checks, it should be treated as an exploratory idea, not a committed test condition.
+
+### 5.3 Explicit Negative Coverage Rules
+
+Negative tests must be added as explicit, named cases rather than generic notes such as "Likely Negative Variants." This project standard keeps negative coverage clear, reviewable, and automation-friendly.
+
+Negative cases are required when:
+
+- A failure path is part of the business contract or validation rule.
+- The API returns a meaningful `responseCode` that must be asserted separately from HTTP status.
+- A user-facing validation message or blocked workflow is a customer-visible behavior.
+- A boundary condition has a distinct rejection outcome.
+
+### 5.4 Priority and Smoke Selection Rules
+
+- P0: Core user journeys, critical business paths, or contract-critical validations.
+- P1: Important coverage that protects correctness, recovery, or contract boundaries.
+- P2: Useful variants, boundary checks, and low-frequency but valid scenarios that provide additional confidence without being required for every execution.
+
+Smoke status should be assigned only to cases that are:
+
+- stable,
+- fast to execute,
+- representative of a critical path,
+- and highly diagnostic when they fail.
+
+### 5.5 Maintenance Guidance
+
+The test design documentation should be reviewed periodically to ensure:
+
+- parent condition tables match the actual child-case files,
+- priority assignments remain aligned with business risk,
+- negative cases remain explicit and intentional,
+- and low-value speculative variants do not bloat the suite.
+
+This review rule ensures the documentation remains practical for automation and does not accumulate redundant or low-value coverage.

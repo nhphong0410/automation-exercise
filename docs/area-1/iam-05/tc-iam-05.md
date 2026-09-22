@@ -12,8 +12,7 @@
 | [**TC-IAM-05-04**](tc-iam-05-04.md) | Equivalence Partitioning | Registered email with blank `Password` field | HTML5 constraint validation blocks submission (`valueMissing`), focus remains on password input, and no HTTP request is dispatched | P1 | No |
 | [**TC-IAM-05-05**](tc-iam-05-05.md) | Boundary Value Analysis | Both `Email Address` and `Password` submitted blank | Form submission is immediately blocked on the first mandatory input (`Email Address`), and page remains on `/login` | P2 | No |
 | [**TC-IAM-05-06**](tc-iam-05-06.md) | Equivalence Partitioning | Malformed email syntax in login input (e.g., `plainaddress`, `user@`, `@domain.com`) | Browser blocks submission via HTML5 email syntax validation (`typeMismatch`), and user remains on `/login` | P2 | No |
-| [**TC-IAM-05-07**](tc-iam-05-07.md) | Error Guessing / Security | Common SQL injection syntax entered in login fields (e.g., `' OR '1'='1`, `admin'--`) | Authentication fails safely without database errors or HTTP 500 responses, displaying standard rejection feedback | P2 | No |
-| [**TC-IAM-05-08**](tc-iam-05-08.md) | State Transition | Authentication recovery: Rejected login attempt $\rightarrow$ User corrects credentials to valid account $\rightarrow$ Re-submits | System transitions from rejected state to authenticated home page, displaying `"Logged in as <username>"` | P2 | No |
+| [**TC-IAM-05-07**](tc-iam-05-07.md) | State Transition | Authentication recovery: Rejected login attempt $\rightarrow$ User corrects credentials to valid account $\rightarrow$ Re-submits | System transitions from rejected state to authenticated home page, displaying `"Logged in as <username>"` | P2 | No |
 
 ### Technique Boundaries
 
