@@ -23,7 +23,7 @@ Verify that when the last remaining product is removed from the cart, the UI tra
 
 1. The SUT is available.
 2. The test starts with a fresh Playwright browser context.
-3. The cart contains exactly one product before the removal action.
+3. The cart is empty before the test adds its single product.
 
 ## Test Data
 
