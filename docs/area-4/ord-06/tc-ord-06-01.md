@@ -22,9 +22,9 @@ Verify that a user can enter valid payment information into the checkout form an
 ## Preconditions
 
 1. The SUT is available.
-2. The user is authenticated or has created an account and is in the checkout step.
-3. A product is present in the cart.
-4. The address and order review steps are already resolved or available.
+2. A valid account or registration data is available.
+3. The catalog contains at least one product.
+4. Valid address and order-review data are available.
 
 ## Test Data
 
