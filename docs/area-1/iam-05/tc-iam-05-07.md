@@ -1,10 +1,10 @@
-# TC-IAM-05-08 - Authentication Recovery Flow After Rejected Login
+# TC-IAM-05-07 - Authentication Recovery Flow After Rejected Login
 
 ## Metadata
 
 | Field | Value |
 | :--- | :--- |
-| Test Case ID | TC-IAM-05-08 |
+| Test Case ID | TC-IAM-05-07 |
 | Parent Condition | TC-IAM-05 |
 | Smoke Test | No |
 | Design Technique | State Transition - authentication recovery flow |
