@@ -32,17 +32,13 @@ The current implementation focuses on the IAM registration flow and a smoke API 
 │   │       ├── tc-iam-01.md
 │   │       └── tc-iam-01-01.md ...
 │   ├── area-3/
-│   │   ├── cart-01/ ... cart-07/
-│   │   └── tc-crt-*.md test case sets
+│   │   └── cart-01/ ... cart-07/ (each folder contains `tc-crt-*.md` files)
 │   ├── area-4/
-│   │   ├── ord-01/ ... ord-08/
-│   │   └── tc-ord-*.md test case sets
+│   │   └── ord-01/ ... ord-08/ (each folder contains `tc-ord-*.md` files)
 │   ├── area-5/
-│   │   ├── utl-01/ ... utl-06/
-│   │   └── tc-utl-*.md test case sets
+│   │   └── utl-01/ ... utl-06/ (each folder contains `tc-utl-*.md` files)
 │   └── area-6/
-│       ├── api-01/ ... api-14/
-│       └── tc-api-*.md test case sets
+│       └── api-01/ ... api-14/ (each folder contains `tc-api-*.md` files)
 ├── src/
 │   ├── components/
 │   ├── data/
