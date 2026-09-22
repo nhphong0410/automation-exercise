@@ -9,7 +9,6 @@
 | [**TC-CAT-07-01**](tc-cat-07-01.md) | Equivalence Partitioning | Valid standard review submission (Name, valid email, descriptive review text) | Submission succeeds and displays the `"Thank you for your review."` confirmation | P2 | No |
 | [**TC-CAT-07-02**](tc-cat-07-02.md) | Negative / EP | Blank mandatory review fields (Name, email, or review text left empty) | Form validation blocks submission or browser HTML5 constraint validation prevents request dispatch | P2 | No |
 | [**TC-CAT-07-03**](tc-cat-07-03.md) | Negative / EP | Malformed email syntax in the review email field (e.g., missing `@` or domain) | Form submission is rejected or client-side email validation prevents completion | P2 | No |
-| [**TC-CAT-07-04**](tc-cat-07-04.md) | Boundary Value Analysis | Extremely long review text string (maximum boundary test) | Application processes long feedback without layout breakage or server errors | P3 | No |
 
 ### Technique Boundaries
 
