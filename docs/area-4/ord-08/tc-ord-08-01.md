@@ -22,8 +22,8 @@ Verify that after a successful order, the user can download the invoice file and
 ## Preconditions
 
 1. The SUT is available.
-2. A valid order has already been placed successfully.
-3. The order confirmation page is open and includes the invoice download option.
+2. A valid user, product, and checkout flow are available.
+3. The test can reach the order confirmation page after placing the order.
 
 ## Test Data
 
