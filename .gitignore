@@ -3,4 +3,3 @@ playwright-report/
 test-results/
 .env
 *.local
-.continue

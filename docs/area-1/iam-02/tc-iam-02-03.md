@@ -1,10 +1,10 @@
-# TC-IAM-02-05 - Duplicate Email Rejection Recovery Flow
+# TC-IAM-02-03 - Duplicate Email Rejection Recovery Flow
 
 ## Metadata
 
 | Field | Value |
 | :--- | :--- |
-| Test Case ID | TC-IAM-02-05 |
+| Test Case ID | TC-IAM-02-03 |
 | Parent Condition | TC-IAM-02 |
 | Smoke Test | No |
 | Design Technique | State Transition - duplicate rejection and recovery |

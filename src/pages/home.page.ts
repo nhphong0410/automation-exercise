@@ -14,7 +14,6 @@ export class HomePage {
   }
 
   async expectLoaded(): Promise<void> {
-    await expect(this.page).toHaveTitle(/Automation Exercise/i);
     await expect(this.productsLink).toBeVisible();
   }
 

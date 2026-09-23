@@ -9,6 +9,54 @@ const calendarBoundaryDates: Array<{
 }> = registrationTestData.calendarBoundaryDates;
 const pairwiseRegistrationRows = registrationTestData.pairwiseRegistrationRows;
 
+async function cleanupCreatedAccount({
+  request,
+  accountPage,
+  data,
+  accountCreated,
+  accountDeleted,
+  authenticated,
+}: {
+  request: any;
+  accountPage?: {
+    deleteAccount: () => Promise<void>;
+    expectDeleted: () => Promise<void>;
+  };
+  data: { email: string; password: string };
+  accountCreated: boolean;
+  accountDeleted: boolean;
+  authenticated: boolean;
+}): Promise<boolean> {
+  if (accountDeleted) {
+    return true;
+  }
+
+  if (authenticated && accountPage) {
+    try {
+      await accountPage.deleteAccount();
+      await accountPage.expectDeleted();
+      return true;
+    } catch {
+      // Fall back to API cleanup when UI cleanup is unavailable.
+    }
+  }
+
+  if (accountCreated) {
+    const response = await request.delete('/api/deleteAccount', {
+      form: {
+        email: data.email,
+        password: data.password,
+      },
+    });
+    const body = await response.json();
+
+    expect(response.status()).toBe(200);
+    expect(body.responseCode).toBe(200);
+  }
+
+  return false;
+}
+
 test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
   test(
     'TC-IAM-01-01 registers a new user with valid data',
@@ -47,28 +95,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
         await accountPage.expectLoggedInAs(data.name);
         authenticated = true;
       } finally {
-        if (authenticated) {
-          try {
-            await accountPage.deleteAccount();
-            await accountPage.expectDeleted();
-            accountDeleted = true;
-          } catch {
-            // Fall back to API cleanup when UI cleanup is unavailable.
-          }
-        }
-
-        if (accountCreated && !accountDeleted) {
-          const response = await request.delete('/api/deleteAccount', {
-            form: {
-              email: data.email,
-              password: data.password,
-            },
-          });
-          const body = await response.json();
-
-          expect(response.status()).toBe(200);
-          expect(body.responseCode).toBe(200);
-        }
+        accountDeleted = await cleanupCreatedAccount({
+          request,
+          accountPage,
+          data,
+          accountCreated,
+          accountDeleted,
+          authenticated,
+        });
       }
     },
   );
@@ -104,28 +138,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
       await accountPage.expectLoggedInAs(data.name);
       authenticated = true;
     } finally {
-      if (authenticated) {
-        try {
-          await accountPage.deleteAccount();
-          await accountPage.expectDeleted();
-          accountDeleted = true;
-        } catch {
-          // Fall back to API cleanup when UI cleanup is unavailable.
-        }
-      }
-
-      if (accountCreated && !accountDeleted) {
-        const response = await request.delete('/api/deleteAccount', {
-          form: {
-            email: data.email,
-            password: data.password,
-          },
-        });
-        const body = await response.json();
-
-        expect(response.status()).toBe(200);
-        expect(body.responseCode).toBe(200);
-      }
+      accountDeleted = await cleanupCreatedAccount({
+        request,
+        accountPage,
+        data,
+        accountCreated,
+        accountDeleted,
+        authenticated,
+      });
     }
   });
 
@@ -161,28 +181,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
       await accountPage.expectLoggedInAs(data.name);
       authenticated = true;
     } finally {
-      if (authenticated) {
-        try {
-          await accountPage.deleteAccount();
-          await accountPage.expectDeleted();
-          accountDeleted = true;
-        } catch {
-          // Fall back to API cleanup when UI cleanup is unavailable.
-        }
-      }
-
-      if (accountCreated && !accountDeleted) {
-        const response = await request.delete('/api/deleteAccount', {
-          form: {
-            email: data.email,
-            password: data.password,
-          },
-        });
-        const body = await response.json();
-
-        expect(response.status()).toBe(200);
-        expect(body.responseCode).toBe(200);
-      }
+      accountDeleted = await cleanupCreatedAccount({
+        request,
+        accountPage,
+        data,
+        accountCreated,
+        accountDeleted,
+        authenticated,
+      });
     }
   });
 
@@ -217,28 +223,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
       await accountPage.expectLoggedInAs(data.name);
       authenticated = true;
     } finally {
-      if (authenticated) {
-        try {
-          await accountPage.deleteAccount();
-          await accountPage.expectDeleted();
-          accountDeleted = true;
-        } catch {
-          // Fall back to API cleanup when UI cleanup is unavailable.
-        }
-      }
-
-      if (accountCreated && !accountDeleted) {
-        const response = await request.delete('/api/deleteAccount', {
-          form: {
-            email: data.email,
-            password: data.password,
-          },
-        });
-        const body = await response.json();
-
-        expect(response.status()).toBe(200);
-        expect(body.responseCode).toBe(200);
-      }
+      accountDeleted = await cleanupCreatedAccount({
+        request,
+        accountPage,
+        data,
+        accountCreated,
+        accountDeleted,
+        authenticated,
+      });
     }
   });
 
@@ -276,28 +268,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
       await accountPage.expectLoggedInAs(data.name);
       authenticated = true;
     } finally {
-      if (authenticated) {
-        try {
-          await accountPage.deleteAccount();
-          await accountPage.expectDeleted();
-          accountDeleted = true;
-        } catch {
-          // Fall back to API cleanup when UI cleanup is unavailable.
-        }
-      }
-
-      if (accountCreated && !accountDeleted) {
-        const response = await request.delete('/api/deleteAccount', {
-          form: {
-            email: data.email,
-            password: data.password,
-          },
-        });
-        const body = await response.json();
-
-        expect(response.status()).toBe(200);
-        expect(body.responseCode).toBe(200);
-      }
+      accountDeleted = await cleanupCreatedAccount({
+        request,
+        accountPage,
+        data,
+        accountCreated,
+        accountDeleted,
+        authenticated,
+      });
     }
   });
 
@@ -335,28 +313,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
       await accountPage.expectLoggedInAs(data.name);
       authenticated = true;
     } finally {
-      if (authenticated) {
-        try {
-          await accountPage.deleteAccount();
-          await accountPage.expectDeleted();
-          accountDeleted = true;
-        } catch {
-          // Fall back to API cleanup when UI cleanup is unavailable.
-        }
-      }
-
-      if (accountCreated && !accountDeleted) {
-        const response = await request.delete('/api/deleteAccount', {
-          form: {
-            email: data.email,
-            password: data.password,
-          },
-        });
-        const body = await response.json();
-
-        expect(response.status()).toBe(200);
-        expect(body.responseCode).toBe(200);
-      }
+      accountDeleted = await cleanupCreatedAccount({
+        request,
+        accountPage,
+        data,
+        accountCreated,
+        accountDeleted,
+        authenticated,
+      });
     }
   });
 
@@ -401,28 +365,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
       await accountPage.expectLoggedInAs(data.name);
       authenticated = true;
     } finally {
-      if (authenticated) {
-        try {
-          await accountPage.deleteAccount();
-          await accountPage.expectDeleted();
-          accountDeleted = true;
-        } catch {
-          // Fall back to API cleanup when UI cleanup is unavailable.
-        }
-      }
-
-      if (accountCreated && !accountDeleted) {
-        const response = await request.delete('/api/deleteAccount', {
-          form: {
-            email: data.email,
-            password: data.password,
-          },
-        });
-        const body = await response.json();
-
-        expect(response.status()).toBe(200);
-        expect(body.responseCode).toBe(200);
-      }
+      accountDeleted = await cleanupCreatedAccount({
+        request,
+        accountPage,
+        data,
+        accountCreated,
+        accountDeleted,
+        authenticated,
+      });
     }
   });
 
@@ -467,28 +417,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
       await accountPage.expectLoggedInAs(data.name);
       authenticated = true;
     } finally {
-      if (authenticated) {
-        try {
-          await accountPage.deleteAccount();
-          await accountPage.expectDeleted();
-          accountDeleted = true;
-        } catch {
-          // Fall back to API cleanup when UI cleanup is unavailable.
-        }
-      }
-
-      if (accountCreated && !accountDeleted) {
-        const response = await request.delete('/api/deleteAccount', {
-          form: {
-            email: data.email,
-            password: data.password,
-          },
-        });
-        const body = await response.json();
-
-        expect(response.status()).toBe(200);
-        expect(body.responseCode).toBe(200);
-      }
+      accountDeleted = await cleanupCreatedAccount({
+        request,
+        accountPage,
+        data,
+        accountCreated,
+        accountDeleted,
+        authenticated,
+      });
     }
   });
 
@@ -530,28 +466,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
         await accountPage.expectLoggedInAs(data.name);
         authenticated = true;
       } finally {
-        if (authenticated) {
-          try {
-            await accountPage.deleteAccount();
-            await accountPage.expectDeleted();
-            accountDeleted = true;
-          } catch {
-            // Fall back to API cleanup when UI cleanup is unavailable.
-          }
-        }
-
-        if (accountCreated && !accountDeleted) {
-          const response = await request.delete('/api/deleteAccount', {
-            form: {
-              email: data.email,
-              password: data.password,
-            },
-          });
-          const body = await response.json();
-
-          expect(response.status()).toBe(200);
-          expect(body.responseCode).toBe(200);
-        }
+        accountDeleted = await cleanupCreatedAccount({
+          request,
+          accountPage,
+          data,
+          accountCreated,
+          accountDeleted,
+          authenticated,
+        });
       }
     });
   }
@@ -616,28 +538,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
       accountDeleted = true;
       await accountPage.expectNoAuthenticatedActions();
     } finally {
-      if (authenticated && !accountDeleted) {
-        try {
-          await accountPage.deleteAccount();
-          await accountPage.expectDeleted();
-          accountDeleted = true;
-        } catch {
-          // Fall back to API cleanup when UI cleanup is unavailable.
-        }
-      }
-
-      if (accountCreated && !accountDeleted) {
-        const response = await request.delete('/api/deleteAccount', {
-          form: {
-            email: data.email,
-            password: data.password,
-          },
-        });
-        const body = await response.json();
-
-        expect(response.status()).toBe(200);
-        expect(body.responseCode).toBe(200);
-      }
+      accountDeleted = await cleanupCreatedAccount({
+        request,
+        accountPage,
+        data,
+        accountCreated,
+        accountDeleted,
+        authenticated,
+      });
     }
   });
 
@@ -661,7 +569,7 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
               zipcode: '400001',
             }
           : data;
-          const title = row.title === 'Mr' ? 'Mr' : 'Mrs';
+      const title = row.title === 'Mr' ? 'Mr' : 'Mrs';
       let accountCreated = false;
       let accountDeleted = false;
       let authenticated = false;
@@ -695,28 +603,14 @@ test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
         await accountPage.expectDeleted();
         accountDeleted = true;
       } finally {
-        if (authenticated && !accountDeleted) {
-          try {
-            await accountPage.deleteAccount();
-            await accountPage.expectDeleted();
-            accountDeleted = true;
-          } catch {
-            // Fall back to API cleanup when UI cleanup is unavailable.
-          }
-        }
-
-        if (accountCreated && !accountDeleted) {
-          const response = await request.delete('/api/deleteAccount', {
-            form: {
-              email: data.email,
-              password: data.password,
-            },
-          });
-          const body = await response.json();
-
-          expect(response.status()).toBe(200);
-          expect(body.responseCode).toBe(200);
-        }
+        accountDeleted = await cleanupCreatedAccount({
+          request,
+          accountPage,
+          data,
+          accountCreated,
+          accountDeleted,
+          authenticated,
+        });
       }
     });
   }
