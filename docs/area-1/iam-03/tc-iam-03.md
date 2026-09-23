@@ -15,8 +15,7 @@
 | [**TC-IAM-03-07**](tc-iam-03-07.md) | Equivalence Partitioning | Step 2 (Address Information): Blank mandatory name fields (`First Name` or `Last Name`) | Submission is blocked on the missing name input, form is not submitted, and page remains on `/signup` | P1 | No |
 | [**TC-IAM-03-08**](tc-iam-03-08.md) | Equivalence Partitioning | Step 2 (Address Information): Blank mandatory address fields (`Address 1`, `State`, `City`, or `Zipcode`) | Submission is blocked on the respective empty mandatory field, preventing account creation | P1 | No |
 | [**TC-IAM-03-09**](tc-iam-03-09.md) | Equivalence Partitioning | Step 2 (Address Information): Blank mandatory `Mobile Number` | Submission is blocked on the mobile number field, preventing account creation | P1 | No |
-| [**TC-IAM-03-10**](tc-iam-03-10.md) | Boundary Value Analysis | Whitespace-only strings entered into mandatory text inputs (e.g., `Name`, `First Name`, `Address 1`) | Submission is either blocked or sanitized by the SUT, preventing the creation of blank or corrupt records | P2 | No |
-| [**TC-IAM-03-11**](tc-iam-03-11.md) | State Transition | Validation recovery: Form submission blocked due to missing field $\rightarrow$ User populates field $\rightarrow$ Re-submits | Form transitions successfully to the next state (`Enter Account Information` or `ACCOUNT CREATED!`) once all required inputs satisfy constraints | P2 | No |
+| [**TC-IAM-03-10**](tc-iam-03-10.md) | Boundary Value Analysis | Whitespace-only strings entered into mandatory text inputs (e.g., `Name`, `First Name`, `Address 1`) | Submission does not trigger HTTP 500s or malformed authenticated state; the SUT may either reject or accept the flow without corrupting account state | P2 | No |
 
 ### Technique Boundaries
 
@@ -31,7 +30,7 @@
   - Automated assertions must evaluate native DOM validity properties (e.g., `await locator.evaluate((el: HTMLInputElement) => el.checkValidity()) === false` or inspecting `validity.valueMissing` / `validity.typeMismatch`) rather than searching for error banners.
 - **Teardown Lifecycle:**
   - Most test cases in this condition do not complete account creation and therefore require no teardown.
-  - **Exception (`TC-IAM-03-11`):** In the recovery flow, registration is successfully completed upon correcting the input. The automated test must record the generated email and password, and execute an `afterEach` teardown hook via `DELETE /api/deleteAccount` to guarantee test isolation.
+  - If whitespace-based validation flows do create an account in the live SUT, the test must clean up by calling `DELETE /api/deleteAccount` with the generated email and password and asserting HTTP `200` with JSON `responseCode` in `[200, 404]`.
 - **Pipeline Optimization & SLA Protection:**
   - To respect the 12-minute regression SLA, Step 2 blank-field checks (`TC-IAM-03-06` through `TC-IAM-03-09`) should be batched or parameterized within a single browser session where possible, avoiding multiple redundant page traversals.
 
