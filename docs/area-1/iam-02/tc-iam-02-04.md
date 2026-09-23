@@ -1,10 +1,10 @@
-# TC-IAM-02-06 - Register User With Recycled Email After Deletion
+# TC-IAM-02-04 - Register User With Recycled Email After Deletion
 
 ## Metadata
 
 | Field | Value |
 | :--- | :--- |
-| Test Case ID | TC-IAM-02-06 |
+| Test Case ID | TC-IAM-02-04 |
 | Parent Condition | TC-IAM-02 |
 | Smoke Test | No |
 | Design Technique | State Transition - account lifecycle and credential recycling |

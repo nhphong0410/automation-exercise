@@ -2,21 +2,21 @@
 
 ## 1. Purpose and scope
 
-This repository automates the public Automation Exercise website using Playwright + TypeScript. The goal is to cover both UI journeys and API contract checks in a maintainable, data-isolated test suite.
+This repository automates the public Automation Exercise website using Playwright and TypeScript. The project is designed as a structured quality engineering repo: it combines a reusable browser automation layer, page-object APIs for site flows, and detailed test-case documentation for functional and API validation.
 
-The current implementation focuses on the IAM registration flow and a smoke API contract, with a test design set in place for broader coverage across catalog, cart, checkout, and other site features.
+The codebase currently contains a working IAM example and a smoke API test, while the broader design set covers catalog, cart, checkout, utilities, and API scenarios across the site.
 
 ## 2. Technology and execution model
 
 - Framework: Playwright with TypeScript
-- Browser target: Chromium Desktop Chrome
-- Test runner config: Playwright config in [playwright.config.ts](playwright.config.ts)
+- Browser target: Chromium desktop browser
+- Test runner configuration: [playwright.config.ts](playwright.config.ts)
 - Base URL: https://automationexercise.com
-- Reporting: list reporter + HTML report
-- Test isolation: each test gets a fresh browser context and isolated state
-- Ad blocking: Google ad network traffic is intentionally blocked in shared fixtures to reduce noise and flaky UI steps
+- Reporting: HTML report and Playwright test output
+- Test isolation: fresh browser context per test by default
+- Ad blocking: known ad-network traffic is blocked by the shared fixture to reduce flaky UI behavior
 
-## 3. Project structure
+## 3. Repository structure
 
 ```text
 .
@@ -28,17 +28,19 @@ The current implementation focuses on the IAM registration flow and a smoke API 
 ├── docs/
 │   ├── automation-exercise-test-design.md
 │   ├── area-1/
-│   │   └── iam-01/
-│   │       ├── tc-iam-01.md
-│   │       └── tc-iam-01-01.md ...
+│   │   ├── iam-01/
+│   │   ├── iam-02/
+│   │   └── iam-05/
+│   ├── area-2/
+│   │   └── cat-*/
 │   ├── area-3/
-│   │   └── cart-01/ ... cart-07/ (each folder contains `tc-crt-*.md` files)
+│   │   └── cart-*/
 │   ├── area-4/
-│   │   └── ord-01/ ... ord-08/ (each folder contains `tc-ord-*.md` files)
+│   │   └── ord-*/
 │   ├── area-5/
-│   │   └── utl-01/ ... utl-06/ (each folder contains `tc-utl-*.md` files)
+│   │   └── utl-*/
 │   └── area-6/
-│       └── api-01/ ... api-14/ (each folder contains `tc-api-*.md` files)
+│       └── api-*/
 ├── src/
 │   ├── components/
 │   ├── data/
@@ -58,7 +60,9 @@ The current implementation focuses on the IAM registration flow and a smoke API 
 │       └── e2e/
 │           └── iam/
 │               └── tc-iam-01.spec.ts
-└── test-results/
+├── test-results/
+├── playwright-report/
+└── .gitignore
 ```
 
 ## 4. Core design conventions
@@ -68,93 +72,90 @@ The current implementation focuses on the IAM registration flow and a smoke API 
 Functionality is separated into page objects under [src/pages](src/pages). Each page object owns selectors and interaction methods for a specific screen:
 
 - [src/pages/home.page.ts](src/pages/home.page.ts): landing page navigation
-- [src/pages/login.page.ts](src/pages/login.page.ts): signup/login form interactions
-- [src/pages/account-information.page.ts](src/pages/account-information.page.ts): registration details and DOB selection
-- [src/pages/account-created.page.ts](src/pages/account-created.page.ts): post-registration confirmation page
-- [src/pages/account.page.ts](src/pages/account.page.ts): authenticated account state and delete flow
-- [src/pages/products.page.ts](src/pages/products.page.ts): products listing checks
+- [src/pages/login.page.ts](src/pages/login.page.ts): signup and login form interactions
+- [src/pages/account-information.page.ts](src/pages/account-information.page.ts): account creation details and DOB selection
+- [src/pages/account-created.page.ts](src/pages/account-created.page.ts): confirmation page after successful registration
+- [src/pages/account.page.ts](src/pages/account.page.ts): account state and delete flow
+- [src/pages/products.page.ts](src/pages/products.page.ts): catalog page validation logic
 
 ### Shared fixtures
 
-The custom Playwright fixture in [src/tests/fixtures.ts](src/tests/fixtures.ts) builds the common page objects and also blocks ad-network requests that otherwise interfere with UI tests.
+The fixture in [src/tests/fixtures.ts](src/tests/fixtures.ts) centralizes the page objects and blocks known ad-network requests that interfere with UI validation.
 
 ### Dynamic test data
 
-Test credentials are generated in [src/data/user-data.ts](src/data/user-data.ts). The generator uses timestamp-based values so every execution gets a unique email and stable unique registration data.
+Unique test identities are generated in [src/data/user-data.ts](src/data/user-data.ts). The generator uses timestamps so every run gets a fresh record and avoids cross-test leakage.
 
 ### Cleanup strategy
 
-The registered account cleanup pattern used in [src/tests/e2e/iam/tc-iam-01.spec.ts](src/tests/e2e/iam/tc-iam-01.spec.ts) is:
+The IAM flow in [src/tests/e2e/iam/tc-iam-01.spec.ts](src/tests/e2e/iam/tc-iam-01.spec.ts) uses a cleanup pattern that ensures a created user is removed during teardown when necessary.
 
-1. Try UI delete flow
-2. If that fails, fall back to API cleanup using DELETE /api/deleteAccount
-3. Assert both HTTP status and JSON responseCode where appropriate
-
-This is important because the UI may not always be available or deterministic during teardown.
+This project also follows an API caution that is important for later work: when the SUT responds with HTTP 200 but includes the actual status in the JSON `responseCode`, both values must be asserted separately.
 
 ## 5. Running the suite
 
 Commands are defined in [package.json](package.json):
 
-- npm test: full suite
-- npm run test:smoke: smoke-only tests
-- npm run test:e2e: all UI tests
-- npm run test:iam: IAM suite
-- npm run test:api: API tests
-- npm run test:headed: headed browser run
-- npm run test:ui: Playwright UI mode
-- npm run report: open the latest HTML report
+- `npm test`: full suite
+- `npm run test:smoke`: smoke-only tests
+- `npm run test:e2e`: all E2E tests
+- `npm run test:iam`: IAM-focused E2E tests
+- `npm run test:api`: API tests
+- `npm run test:headed`: run Playwright in headed mode
+- `npm run test:ui`: launch Playwright UI mode
+- `npm run report`: open the latest HTML report
 
 ## 6. Current automation coverage
 
 ### Implemented
 
-- IAM registration flow for valid data
-- Smoke API contract for the products list endpoint
+- IAM registration flow and basic registration cleanup pattern
+- Smoke API validation for the product list endpoint
 
-### Intended and documented
+### Documented and planned
 
-The project includes a high-level design in [docs/automation-exercise-test-design.md](docs/automation-exercise-test-design.md) and a detailed IAM design index in [docs/area-1/iam-01/tc-iam-01.md](docs/area-1/iam-01/tc-iam-01.md). The design covers the major areas beyond the current workload, including:
+The project includes a high-level design in [docs/automation-exercise-test-design.md](docs/automation-exercise-test-design.md) and a structured set of area-level docs under [docs](docs). These cover the main business domains:
 
-- Identity and Access Management
-- Product catalog and search
-- Cart and checkout
-- API coverage across the site backend
-- Utility and communication flows
+- Identity and access management
+- Product catalog and discovery
+- Cart management
+- Checkout and order flow
+- Utility interactions
+- REST API surfaces
 
 ## 7. Important implementation patterns for later work
 
-- Keep page-specific logic in page objects, not in tests
-- Prefer explicit waits via Playwright assertions over custom sleeps
+- Keep page-specific logic in page objects instead of tests
+- Prefer explicit Playwright assertions over custom sleep loops
 - Reuse the shared fixture for page objects and network interception
-- Use unique registration data for every test run
-- Keep cleanup in finally blocks whenever a test creates a user or mutates state
-- Assert both transport status and JSON responseCode for API tests when the service returns HTTP 200 with an application-level response code
+- Generate unique registration data for every run
+- Keep teardown in `try/finally` blocks whenever a test creates users or changes state
+- Assert both transport status and JSON `responseCode` for API tests where the service returns application-level results in the payload
 
 ## 8. Open project state
 
-The repository is in a solid partial-implementation state:
+The repository is in a design-first, partially implemented stage:
 
-- The framework scaffolding is already in place
-- The booking of test patterns and page objects is established
-- The IAM registration suite is implemented as a working example
-- Additional suites are not yet present under src/tests/e2e beyond the IAM folder
+- The framework and project scaffolding are already established
+- The page objects and shared fixtures are in place
+- The IAM registration flow is the clearest working example
+- Additional E2E areas are represented as design docs and planned automation work, not yet fully implemented as executable Playwright tests
 
-This makes the project a strong base for extending into the remaining planned catalog, cart, and checkout flows.
+This means the repo is a strong base for expanding into the remaining catalog, cart, checkout, utility, and API scenarios described in the design docs.
 
 ## 9. Recommended next tasks
 
-1. Expand the E2E folder with the remaining test conditions from the design docs
-2. Add more API cases beyond the smoke test
-3. Reuse the same result patterns for cleanup and validation across all new suites
-4. Add specialized utility components only when several pages share the same repeated UI section
+1. Implement additional E2E suites from the design docs in a consistent POM pattern
+2. Expand API coverage beyond the smoke contract
+3. Reuse the same cleanup and validation patterns across new suites
+4. Add only the extra utility components needed for repeated UI sections
 
-## 10. Most important files to know
+## 10. Key files to know
 
 - [README.md](README.md)
 - [playwright.config.ts](playwright.config.ts)
 - [src/tests/fixtures.ts](src/tests/fixtures.ts)
 - [src/data/user-data.ts](src/data/user-data.ts)
 - [src/tests/e2e/iam/tc-iam-01.spec.ts](src/tests/e2e/iam/tc-iam-01.spec.ts)
-- [src/pages/account-information.page.ts](src/pages/account-information.page.ts)
+- [src/tests/api/api.spec.ts](src/tests/api/api.spec.ts)
 - [docs/automation-exercise-test-design.md](docs/automation-exercise-test-design.md)
