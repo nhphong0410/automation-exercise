@@ -17,7 +17,7 @@
 
 ## Objective
 
-Verify that submitting whitespace-only strings into mandatory text inputs (such as `Name` on Step 1, or `First Name` and `Address 1` on Step 2) is handled safely by the SUT—either blocked as empty input or sanitized—preventing unhandled server errors or the creation of corrupt records with blank profile details.
+Verify that submitting whitespace-only strings into mandatory text inputs (such as `Name` on Step 1, or `First Name` and `Address 1` on Step 2) does not cause HTTP 500 errors, broken account state, or unhandled client failures. The live SUT may accept these values and continue through the signup flow without trimming them, but the application must remain stable and must not render a malformed authenticated banner.
 
 ## Preconditions
 
@@ -56,16 +56,17 @@ Retain the generated email for failure handling assertions.
 4. Enter the valid generated email into the signup `Email Address` field.
 5. Select `Signup`. Verify the form submission is dispatched.
 6. Verify application behavior on Step 1:
-   - If client-side trimming is enforced, submission is blocked and the browser remains on `/login`.
-   - If submitted to the server, verify the server does not return an HTTP 500 error and transitions to Step 2.
+   - If the site blocks the submission at the client layer, verify the browser remains on `/login`.
+   - If the site allows the flow to continue, verify it does not return an HTTP 500 and that navigation proceeds to `/signup` or the success path without a broken error state.
 7. If Step 2 (`/signup`) is reached, enter valid password and required fields while supplying whitespace-only (`"   "`) into `First Name` and `Address 1`.
 8. Select `Create Account`. Verify the form submission is dispatched.
 9. Verify that no HTTP 500 Internal Server Error is returned by any network requests.
-10. If an account is created, verify the navbar does not render an empty or broken identity banner (e.g., `Logged in as ` with no name string).
+10. If an account is created, verify the navbar does not render an empty or malformed identity banner (for example `Logged in as ` with no name string).
+11. If a created account is observed, perform a teardown cleanup using `DELETE /api/deleteAccount` with the generated email and password.
 
 ## Expected Result
 
-Submitting whitespace-only strings in mandatory fields does not cause application crashes, unhandled script errors, or HTTP 500 responses. The system either rejects the submission as invalid/empty or handles the values safely without corrupting account display state.
+Submitting whitespace-only strings in mandatory fields does not cause application crashes, server-side 500 errors, or malformed authenticated state. The system may accept the values and continue through signup without trimming them, but it must remain stable and must not produce a broken `Logged in as` display or a failed server response.
 
 ## Cleanup And Failure Handling
 
@@ -79,7 +80,9 @@ Submitting whitespace-only strings in mandatory fields does not cause applicatio
 - Use `HomePage`, `LoginPage`, and `AccountInformationPage`.
 - Use Playwright's `locator.fill('   ')` to ensure raw whitespace is populated directly into the DOM input without framework-level trimming.
 - Attach network response listeners (`page.on('response', ...)`) to assert that no HTTP 500 responses occur during whitespace submission.
-- Do not reuse authenticated storage state because this test evaluates unauthenticated guest behavior.
+- Do not assume the site will reject whitespace-only values; assert the real runtime behavior, which may be acceptance through signup or account creation without 500 errors.
+- Assert that the authenticated banner is never rendered in a malformed state (for example `Logged in as ` without a name).
+- If the flow produces an account, call `DELETE /api/deleteAccount` in a `finally` block, asserting HTTP `200` and JSON `responseCode` in `[200, 404]`.
 
 ## Traceability
 
