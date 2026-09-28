@@ -8,7 +8,7 @@
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [**TC-IAM-04-01**](tc-iam-04-01.md) | Equivalence Partitioning | Baseline valid login: Standard valid email and password submitted via "Login" button click | User authenticates successfully, lands on home page, and navbar displays `"Logged in as <username>"`, `Logout`, and `Delete Account` | P0 | Yes |
 | [**TC-IAM-04-02**](tc-iam-04-02.md) | Equivalence Partitioning | Keyboard submission: Valid credentials submitted by pressing the `Enter` key inside the password input | Form submits without clicking the button; user authenticates and navbar renders `"Logged in as <username>"` | P1 | No |
-| [**TC-IAM-04-03**](tc-iam-04-03.md) | Equivalence Partitioning | Case-insensitive email handling: Registered email submitted with uppercase or mixed-case casing | Authentication succeeds regardless of email case formatting; user is authenticated with `"Logged in as <username>"` | P1 | No |
+| [**TC-IAM-04-03**](tc-iam-04-03.md) | Equivalence Partitioning / Negative validation | Uppercase email handling: Registered email submitted with uppercase characters | The login attempt is rejected and the user remains on `/login` with the credential error banner; no authenticated session is created | P1 | No |
 | [**TC-IAM-04-04**](tc-iam-04-04.md) | Equivalence Partitioning | Complex password authentication: Account registered with special characters, numbers, and mixed case | Credentials are parsed without character encoding or truncation issues; authentication succeeds | P1 | No |
 | [**TC-IAM-04-05**](tc-iam-04-05.md) | Boundary Value Analysis | Email input whitespace sanitization: Valid registered email entered with leading and/or trailing whitespace | Input is sanitized/trimmed by the client or server, and user logs in successfully | P2 | No |
 | [**TC-IAM-04-06**](tc-iam-04-06.md) | State Transition | Authenticated navigation continuity: User logs in $\rightarrow$ Browses across `/products`, `/view_cart`, and `/contact_us` | Authenticated session (`"Logged in as <username>"`) remains active and persistent across all internal route transitions | P1 | No |
@@ -16,9 +16,10 @@
 
 ### Technique Boundaries
 
-- Valid authentication journeys here apply exclusively to accounts that already exist in the database and supply correct credentials.
+- Valid authentication journeys here apply to accounts that already exist in the database and supply correct credentials.
+- The live SUT rejects uppercase email submissions as credential mismatches; this is captured in `TC-IAM-04-03` and is treated as a negative validation variant of the same condition.
 - Registration of new users belongs to `TC-IAM-01`.
-- Authentication failures (wrong password, non-existent email, blank login fields) belong to `TC-IAM-05`.
+- Authentication failures (wrong password, non-existent email, blank login fields, and case-mismatched rejection) belong to `TC-IAM-05` and the negative IAM-04 variant when the SUT behavior is verified live.
 - Explicit logout validation and post-logout protected route restrictions belong to `TC-IAM-06`.
 - Deep session persistence across browser reload (`page.reload()`) and multi-tab isolation belongs to `TC-IAM-08`.
 - Direct backend API login verification (`POST /api/verifyLogin`) belongs to `TC-API-07`.
