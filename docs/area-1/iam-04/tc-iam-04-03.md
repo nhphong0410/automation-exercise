@@ -10,14 +10,14 @@
 | Design Technique | Equivalence Partitioning - case-insensitive email partition |
 | Area | Area 1 - Identity & Access Management (IAM) |
 | Priority | P1 |
-| Test Type | Functional / Positive |
+| Test Type | Functional / Negative |
 | Automation Level | UI end-to-end |
 | Framework | Playwright with TypeScript |
 | SUT | https://automationexercise.com |
 
 ## Objective
 
-Verify that a user registered with a lowercase email address can authenticate successfully when entering their email in uppercase or mixed-case characters, confirming that authentication email lookups are case-insensitive, establish an active session, display the `"Logged in as <username>"` indicator, and delete the account cleanly during teardown.
+Verify that a registered user whose lowercase email is submitted in uppercase form is rejected by the live login flow, remains unauthenticated on `/login`, shows the standard credential error banner, and does not create an active session.
 
 ## Preconditions
 
@@ -60,37 +60,35 @@ Retain the generated lowercase email and password for API seeding, UI login, and
 4. Enter the uppercase transformed email (`USER_<...>@QA.TEST`) into the login `Email Address` field. Verify the field contains the uppercase string.
 5. Enter the seeded password into the login `Password` field. Verify the field contains the password value.
 6. Select `Login`. Verify the form submission is dispatched.
-7. Verify the browser navigates to `/` (home page).
-8. Verify the header navbar displays `Logged in as QA Case User <timestamp>`.
-9. Verify the header navbar displays the `Logout` link (`a[href="/logout"]`).
-10. Verify the header navbar displays the `Delete Account` link (`a[href="/delete_account"]`).
-11. Verify the unauthenticated link `Signup / Login` (`a[href="/login"]`) is not visible in the navbar.
-12. Select `Delete Account`. Verify account deletion is submitted.
-13. Verify `ACCOUNT DELETED!` is visible on the confirmation screen.
+7. Verify the browser remains on `/login` instead of navigating to `/`.
+8. Verify the login form shows the error banner `Your email or password is incorrect!`.
+9. Verify the navbar does not show `Logged in as <username>`, `Logout`, or `Delete Account`.
+10. Verify the account remains unauthenticated and no session is created.
+11. Clean up the seeded account with `DELETE /api/deleteAccount` using the original lowercase email and password.
 
 ## Expected Result
 
-The application resolves the user identity case-insensitively. The user authenticates successfully using uppercase email characters, lands on the home page with `"Logged in as <username>"`, `Logout`, and `Delete Account` links visible, and the account is deleted cleanly during teardown.
+The application treats the uppercase email variant as a credential mismatch. The login attempt is rejected, the user remains on `/login`, the error banner `Your email or password is incorrect!` is visible, and no authenticated session is established.
 
 ## Cleanup And Failure Handling
 
-1. Attempt UI account deletion in a `finally` block whenever the account is authenticated.
-2. Verify `ACCOUNT DELETED!` after UI deletion.
-3. If UI cleanup is unavailable or fails after account creation, call `DELETE /api/deleteAccount` with the seeded lowercase email and password in an `afterEach` hook.
-4. Assert the fallback response returns HTTP `200` with JSON `responseCode` in `[200, 404]`.
-5. Close the isolated browser context after the test.
+1. Seed the lowercase email account before the login attempt.
+2. If the UI login attempt fails as expected, call `DELETE /api/deleteAccount` with the seeded lowercase email and password in a `finally` block.
+3. Assert the cleanup response returns HTTP `200` with JSON `responseCode` in `[200, 404]`.
+4. Close the isolated browser context after the test.
 
 ## Automation Notes
 
 - Use the POM fixtures from `src/tests/fixtures.ts`.
 - Use `HomePage`, `LoginPage`, and `AccountPage`.
-- Seed the account using Playwright's `request` API context via `POST /api/createAccount` using standard lowercase format before driving the UI.
-- Transform the email using `email.toUpperCase()` when calling `loginPage.emailInput.fill()`.
-- Assert authenticated state using `li:has-text("Logged in as")` and verify absence of `a[href="/login"]`.
-- Do not reuse authenticated storage state because this test explicitly exercises the login flow and mutates account data.
+- Seed the account using Playwright's `request` API context via `POST /api/createAccount` using the standard lowercase email format before driving the UI.
+- Transform the email using `email.toUpperCase()` when calling the login email field.
+- Assert that the page remains on `/login` and that `.login-form form p` or a `p:has-text("Your email or password is incorrect!")` locator is visible.
+- Verify `Logged in as` is absent and no authenticated navigation elements appear.
+- Do not reuse authenticated storage state because this test explicitly exercises the login flow and verifies failed auth behavior.
 
 ## Traceability
 
-This case implements the case-insensitive email equivalence partition for:
+This case implements the live SUT behavior for the uppercase-email negative variation of:
 
 > TC-IAM-04 - Login with valid credentials and verify "Logged in as <username>"
