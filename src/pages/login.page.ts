@@ -6,6 +6,7 @@ export class LoginPage {
   readonly loginEmailInput: Locator;
   readonly loginPasswordInput: Locator;
   readonly loginButton: Locator;
+  readonly loginError: Locator;
   readonly signupNameInput: Locator;
   readonly signupEmailInput: Locator;
   readonly signupButton: Locator;
@@ -17,6 +18,7 @@ export class LoginPage {
     this.loginEmailInput = page.locator('[data-qa="login-email"]');
     this.loginPasswordInput = page.locator('[data-qa="login-password"]');
     this.loginButton = page.locator('[data-qa="login-button"]');
+    this.loginError = page.locator('.login-form form p');
     this.signupNameInput = page.locator('[data-qa="signup-name"]');
     this.signupEmailInput = page.locator('[data-qa="signup-email"]');
     this.signupButton = page.locator('[data-qa="signup-button"]');
@@ -33,6 +35,10 @@ export class LoginPage {
 
   async expectLoginLoaded(): Promise<void> {
     await expect(this.loginHeading).toBeVisible();
+  }
+
+  async expectLoginError(): Promise<void> {
+    await expect(this.loginError).toHaveText('Your email or password is incorrect!');
   }
 
   async expectDuplicateEmailError(): Promise<void> {
