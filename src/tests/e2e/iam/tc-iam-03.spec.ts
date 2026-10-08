@@ -1,4 +1,5 @@
 import { test, expect } from '../../fixtures';
+import { cleanupAccount } from '../../../helpers/account-api';
 
 const buildUtcStamp = () => {
   const now = new Date();
@@ -583,16 +584,7 @@ test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
       await expect(page.getByText(/^Logged in as\s+/i)).not.toBeVisible();
     } finally {
       if (accountCreated) {
-        const response = await request.delete('/api/deleteAccount', {
-          form: {
-            email: data.email,
-            password: data.password,
-          },
-        });
-        const body = await response.json();
-
-        expect(response.status()).toBe(200);
-        expect([200, 404]).toContain(body.responseCode);
+        await cleanupAccount(request, data);
       }
     }
   });

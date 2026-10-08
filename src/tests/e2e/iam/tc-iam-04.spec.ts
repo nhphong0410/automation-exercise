@@ -1,24 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { createRegistrationData } from '../../../data/user-data';
-
-async function cleanupAccount({
-  request,
-  data,
-}: {
-  request: any;
-  data: { email: string; password: string };
-}): Promise<void> {
-  const response = await request.delete('/api/deleteAccount', {
-    form: {
-      email: data.email,
-      password: data.password,
-    },
-  });
-  const body = await response.json();
-
-  expect(response.status()).toBe(200);
-  expect([200, 404]).toContain(body.responseCode);
-}
+import { cleanupAccount, seedAccount } from '../../../helpers/account-api';
 
 test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
   test('TC-IAM-04-01 logs in successfully with valid credentials', async ({
@@ -32,28 +14,7 @@ test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
     let authenticated = false;
 
     try {
-      const seedResponse = await request.post('/api/createAccount', {
-        form: {
-          name: data.name,
-          email: data.email,
-          password: data.password,
-          title: 'Mr',
-          firstname: data.firstName,
-          lastname: data.lastName,
-          company: data.company,
-          address1: data.address,
-          address2: data.address2,
-          country: data.country,
-          state: data.state,
-          city: data.city,
-          zipcode: data.zipcode,
-          mobile_number: data.mobileNumber,
-        },
-      });
-      const seedBody = await seedResponse.json();
-
-      expect(seedResponse.status()).toBe(200);
-      expect(seedBody.responseCode).toBe(201);
+      await seedAccount(request, data);
 
       await homePage.open();
       await homePage.expectLoaded();
@@ -75,10 +36,10 @@ test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
           await accountPage.deleteAccount();
           await expect(page.getByText(/ACCOUNT DELETED!/i)).toBeVisible();
         } catch {
-          await cleanupAccount({ request, data });
+          await cleanupAccount(request, data);
         }
       } else {
-        await cleanupAccount({ request, data });
+        await cleanupAccount(request, data);
       }
     }
   });
@@ -94,28 +55,7 @@ test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
     let authenticated = false;
 
     try {
-      const seedResponse = await request.post('/api/createAccount', {
-        form: {
-          name: data.name,
-          email: data.email,
-          password: data.password,
-          title: 'Mr',
-          firstname: data.firstName,
-          lastname: data.lastName,
-          company: data.company,
-          address1: data.address,
-          address2: data.address2,
-          country: data.country,
-          state: data.state,
-          city: data.city,
-          zipcode: data.zipcode,
-          mobile_number: data.mobileNumber,
-        },
-      });
-      const seedBody = await seedResponse.json();
-
-      expect(seedResponse.status()).toBe(200);
-      expect(seedBody.responseCode).toBe(201);
+      await seedAccount(request, data);
 
       await homePage.open();
       await homePage.expectLoaded();
@@ -135,10 +75,10 @@ test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
           await accountPage.deleteAccount();
           await expect(page.getByText(/ACCOUNT DELETED!/i)).toBeVisible();
         } catch {
-          await cleanupAccount({ request, data });
+          await cleanupAccount(request, data);
         }
       } else {
-        await cleanupAccount({ request, data });
+        await cleanupAccount(request, data);
       }
     }
   });
@@ -153,28 +93,7 @@ test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
     const uppercaseEmail = data.email.toUpperCase();
 
     try {
-      const seedResponse = await request.post('/api/createAccount', {
-        form: {
-          name: data.name,
-          email: data.email,
-          password: data.password,
-          title: 'Mr',
-          firstname: data.firstName,
-          lastname: data.lastName,
-          company: data.company,
-          address1: data.address,
-          address2: data.address2,
-          country: data.country,
-          state: data.state,
-          city: data.city,
-          zipcode: data.zipcode,
-          mobile_number: data.mobileNumber,
-        },
-      });
-      const seedBody = await seedResponse.json();
-
-      expect(seedResponse.status()).toBe(200);
-      expect(seedBody.responseCode).toBe(201);
+      await seedAccount(request, data);
 
       await homePage.open();
       await homePage.expectLoaded();
@@ -190,7 +109,7 @@ test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
       await expect(page.getByText(/Logged in as /i)).not.toBeVisible();
       await expect(page.getByRole('link', { name: /delete account/i })).not.toBeVisible();
     } finally {
-      await cleanupAccount({ request, data });
+      await cleanupAccount(request, data);
     }
   });
 
@@ -207,28 +126,7 @@ test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
     let authenticated = false;
 
     try {
-      const seedResponse = await request.post('/api/createAccount', {
-        form: {
-          name: complexData.name,
-          email: complexData.email,
-          password: complexData.password,
-          title: 'Mr',
-          firstname: complexData.firstName,
-          lastname: complexData.lastName,
-          company: complexData.company,
-          address1: complexData.address,
-          address2: complexData.address2,
-          country: complexData.country,
-          state: complexData.state,
-          city: complexData.city,
-          zipcode: complexData.zipcode,
-          mobile_number: complexData.mobileNumber,
-        },
-      });
-      const seedBody = await seedResponse.json();
-
-      expect(seedResponse.status()).toBe(200);
-      expect(seedBody.responseCode).toBe(201);
+      await seedAccount(request, complexData);
 
       await homePage.open();
       await homePage.expectLoaded();
@@ -246,10 +144,10 @@ test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
           await accountPage.deleteAccount();
           await expect(page.getByText(/ACCOUNT DELETED!/i)).toBeVisible();
         } catch {
-          await cleanupAccount({ request, data: complexData });
+          await cleanupAccount(request, complexData);
         }
       } else {
-        await cleanupAccount({ request, data: complexData });
+        await cleanupAccount(request, complexData);
       }
     }
   });
@@ -266,28 +164,7 @@ test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
     let authenticated = false;
 
     try {
-      const seedResponse = await request.post('/api/createAccount', {
-        form: {
-          name: data.name,
-          email: data.email,
-          password: data.password,
-          title: 'Mr',
-          firstname: data.firstName,
-          lastname: data.lastName,
-          company: data.company,
-          address1: data.address,
-          address2: data.address2,
-          country: data.country,
-          state: data.state,
-          city: data.city,
-          zipcode: data.zipcode,
-          mobile_number: data.mobileNumber,
-        },
-      });
-      const seedBody = await seedResponse.json();
-
-      expect(seedResponse.status()).toBe(200);
-      expect(seedBody.responseCode).toBe(201);
+      await seedAccount(request, data);
 
       await homePage.open();
       await homePage.expectLoaded();
@@ -307,10 +184,10 @@ test.describe('TC-IAM-04 - Login With Valid Credentials', () => {
           await accountPage.deleteAccount();
           await expect(page.getByText(/ACCOUNT DELETED!/i)).toBeVisible();
         } catch {
-          await cleanupAccount({ request, data });
+          await cleanupAccount(request, data);
         }
       } else {
-        await cleanupAccount({ request, data });
+        await cleanupAccount(request, data);
       }
     }
   });
