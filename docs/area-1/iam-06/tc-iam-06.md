@@ -1,6 +1,6 @@
 # TC-IAM-06 - Logout Flow And Restricted-Page Access Verification
 
-`TC-IAM-06` is the high-level test condition. The detailed cases below decompose it using multiple test design techniques. Each case requires an active authenticated user session to verify that initiating logout terminates the session, redirects to `/login`, restores unauthenticated navigation elements, and prevents unauthorized access to protected routes or cached history.
+`TC-IAM-06` is the high-level test condition. The detailed cases below decompose it using multiple test design techniques. Each case requires an active authenticated user session to verify that initiating logout terminates the session, redirects to `/login`, restores unauthenticated navigation elements, and invalidates authenticated state across browser history and tabs.
 
 ## Derived Test Case List
 
@@ -9,8 +9,6 @@
 | [**TC-IAM-06-01**](tc-iam-06-01.md) | Equivalence Partitioning | Baseline logout from Home page (`/`) via the navbar `Logout` link | Session is terminated, user is redirected to `/login`, `"Signup / Login"` link reappears, and `"Logged in as"` is removed | P1 | No |
 | [**TC-IAM-06-02**](tc-iam-06-02.md) | Equivalence Partitioning | Secondary page logout: Trigger `Logout` from a non-home page (e.g., `/products` or `/view_cart`) | Logout executes successfully, user is redirected to `/login`, and session cookies are cleared | P1 | No |
 | [**TC-IAM-06-03**](tc-iam-06-03.md) | State Transition / Security | Browser Back navigation post-logout: Click browser `Back` button after successful logout | Cached authenticated state is not restored; protected controls remain inaccessible and subsequent actions prompt re-login | P1 | No |
-| [**TC-IAM-06-04**](tc-iam-06-04.md) | Security / Access Control | Direct URL navigation to protected account deletion route (`/delete_account`) after logout | Access is blocked; user is redirected to `/login` or access is denied without triggering account deletion | P1 | No |
-| [**TC-IAM-06-05**](tc-iam-06-05.md) | Security / Access Control | Direct URL navigation to checkout route (`/checkout`) post-logout | Direct access is intercepted; system redirects to `/login` or displays checkout authentication prompt modal | P2 | No |
 | [**TC-IAM-06-06**](tc-iam-06-06.md) | Concurrency / State Transition | Multi-tab session invalidation: User logs out in Tab 1 $\rightarrow$ Tab 2 is refreshed | Tab 2 updates to unauthenticated state upon refresh, confirming session revocation across tabs | P2 | No |
 | [**TC-IAM-06-07**](tc-iam-06-07.md) | State Transition | Full lifecycle re-authentication: Login $\rightarrow$ Logout $\rightarrow$ Re-login with the same credentials | Entire authentication cycle completes cleanly without stale session tokens, cookie lockups, or caching errors | P2 | No |
 

@@ -17,4 +17,8 @@ export class ProductsPage {
     await expect(this.allProductsHeading).toBeVisible();
     await expect(this.firstProductCard).toBeVisible();
   }
+
+  async expectLoggedInAs(name: string): Promise<void> {
+    await expect(this.page.getByText(`Logged in as ${name}`, { exact: true })).toBeVisible();
+  }
 }
