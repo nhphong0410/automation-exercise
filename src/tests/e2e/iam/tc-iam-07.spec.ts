@@ -1,37 +1,8 @@
 import { test, expect } from '../../fixtures';
-import { createRegistrationData, type RegistrationData } from '../../../data/user-data';
-import type { AccountPage } from '../../../pages/account.page';
-import type { HomePage } from '../../../pages/home.page';
-import type { LoginPage } from '../../../pages/login.page';
+import { createRegistrationData } from '../../../data/user-data';
 import { cleanupAccount, seedAccount } from '../../../helpers/account-api';
-
-async function loginAs(
-  homePage: HomePage,
-  loginPage: LoginPage,
-  accountPage: AccountPage,
-  data: RegistrationData,
-): Promise<void> {
-  await homePage.open();
-  await homePage.expectLoaded();
-  await homePage.openLogin();
-  await loginPage.expectLoginLoaded();
-  await loginPage.login(data.email, data.password);
-  await accountPage.expectLoggedInAs(data.name);
-}
-
-async function deleteThroughUi(accountPage: AccountPage): Promise<void> {
-  await accountPage.deleteAccount();
-  await accountPage.expectDeleted();
-}
-
-async function continueToGuestHome(
-  accountPage: AccountPage,
-  homePage: HomePage,
-): Promise<void> {
-  await accountPage.continueAfterDeletion();
-  await homePage.expectLoaded();
-  await accountPage.expectGuestState();
-}
+import { continueToGuestHome, deleteThroughUi } from '../../../helpers/account-lifecycle';
+import { loginAs } from '../../../helpers/session';
 
 test.describe('TC-IAM-07 - Delete Account Via UI', () => {
   test('TC-IAM-07-01 deletes an account from the home page', async ({

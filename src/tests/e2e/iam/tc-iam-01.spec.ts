@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { createRegistrationData } from '../../../data/user-data';
-import { cleanupAccount } from '../../../helpers/account-api';
+import { cleanupCreatedAccount } from '../../../helpers/account-lifecycle';
 import registrationTestData from '../../../data/tc-iam-01.json';
 import type { DateOfBirth } from '../../../pages/account-information.page';
 
@@ -9,45 +9,6 @@ const calendarBoundaryDates: Array<{
   dateOfBirth: DateOfBirth;
 }> = registrationTestData.calendarBoundaryDates;
 const pairwiseRegistrationRows = registrationTestData.pairwiseRegistrationRows;
-
-async function cleanupCreatedAccount({
-  request,
-  accountPage,
-  data,
-  accountCreated,
-  accountDeleted,
-  authenticated,
-}: {
-  request: any;
-  accountPage?: {
-    deleteAccount: () => Promise<void>;
-    expectDeleted: () => Promise<void>;
-  };
-  data: { email: string; password: string };
-  accountCreated: boolean;
-  accountDeleted: boolean;
-  authenticated: boolean;
-}): Promise<boolean> {
-  if (accountDeleted) {
-    return true;
-  }
-
-  if (authenticated && accountPage) {
-    try {
-      await accountPage.deleteAccount();
-      await accountPage.expectDeleted();
-      return true;
-    } catch {
-      // Fall back to API cleanup when UI cleanup is unavailable.
-    }
-  }
-
-  if (accountCreated) {
-    await cleanupAccount(request, data);
-  }
-
-  return false;
-}
 
 test.describe('TC-IAM-01 - Register New User With Valid Data', () => {
   test(

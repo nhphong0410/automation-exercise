@@ -1,30 +1,11 @@
 import { test, expect } from '../../fixtures';
 import type { Page } from '@playwright/test';
-import { createRegistrationData, type RegistrationData } from '../../../data/user-data';
+import { createRegistrationData } from '../../../data/user-data';
 import { AccountPage } from '../../../pages/account.page';
 import { HomePage } from '../../../pages/home.page';
 import { LoginPage } from '../../../pages/login.page';
 import { cleanupAccount, seedAccount } from '../../../helpers/account-api';
-
-async function loginAs(
-  homePage: HomePage,
-  loginPage: LoginPage,
-  accountPage: AccountPage,
-  data: Pick<RegistrationData, 'name' | 'email' | 'password'>,
-): Promise<void> {
-  await homePage.open();
-  await homePage.expectLoaded();
-  await homePage.openLogin();
-  await loginPage.expectLoginLoaded();
-  await loginPage.login(data.email, data.password);
-
-  await accountPage.expectLoggedInAs(data.name);
-}
-
-async function logoutAndExpectGuest(accountPage: AccountPage): Promise<void> {
-  await accountPage.logout();
-  await accountPage.expectLoggedOut();
-}
+import { loginAs, logoutAndExpectGuest } from '../../../helpers/session';
 
 test.describe('TC-IAM-06 - Logout Flow And Restricted-Page Access Verification', () => {
   test('TC-IAM-06-01 logs out from the home page', async ({

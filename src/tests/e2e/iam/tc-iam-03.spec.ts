@@ -1,92 +1,6 @@
 import { test, expect } from '../../fixtures';
+import { buildCaseData } from '../../../data/tc-iam-03';
 import { cleanupAccount } from '../../../helpers/account-api';
-
-const buildUtcStamp = () => {
-  const now = new Date();
-  const dateStamp = [
-    now.getUTCFullYear(),
-    String(now.getUTCMonth() + 1).padStart(2, '0'),
-    String(now.getUTCDate()).padStart(2, '0'),
-  ].join('');
-  const timeStamp = [
-    String(now.getUTCHours()).padStart(2, '0'),
-    String(now.getUTCMinutes()).padStart(2, '0'),
-    String(now.getUTCSeconds()).padStart(2, '0'),
-    String(now.getUTCMilliseconds()).padStart(3, '0'),
-  ].join('');
-  const epoch = Date.now();
-
-  return { dateStamp, timeStamp, epoch };
-};
-
-type TcIam03CaseData =
-  | { email: string; password: string }
-  | { name: string }
-  | { name: string; malformedEmail: string }
-  | { name: string; missingDomainEmail: string; missingLocalPartEmail: string }
-  | { name: string; email: string }
-  | { name: string; email: string; password: string };
-
-function buildTcIam03CaseData(workerIndex: number, caseId: 'TC-IAM-03-01'): { email: string; password: string };
-function buildTcIam03CaseData(workerIndex: number, caseId: 'TC-IAM-03-02'): { name: string };
-function buildTcIam03CaseData(workerIndex: number, caseId: 'TC-IAM-03-04'): { name: string; malformedEmail: string };
-function buildTcIam03CaseData(workerIndex: number, caseId: 'TC-IAM-03-05'): { name: string; missingDomainEmail: string; missingLocalPartEmail: string };
-function buildTcIam03CaseData(workerIndex: number, caseId: 'TC-IAM-03-06' | 'TC-IAM-03-07' | 'TC-IAM-03-08' | 'TC-IAM-03-09'): { name: string; email: string };
-function buildTcIam03CaseData(workerIndex: number, caseId: 'TC-IAM-03-10'): { name: string; email: string; password: string };
-function buildTcIam03CaseData(workerIndex: number, caseId: string): TcIam03CaseData {
-  const { dateStamp, timeStamp, epoch } = buildUtcStamp();
-
-  switch (caseId) {
-    case 'TC-IAM-03-01':
-      return {
-        email: `valid_${dateStamp}_${timeStamp}_${workerIndex}@qa.test`,
-        password: 'Password@123',
-      };
-    case 'TC-IAM-03-02':
-      return {
-        name: `QA User ${epoch}`,
-      };
-    case 'TC-IAM-03-04':
-      return {
-        name: `QA Syntax User ${workerIndex}_${epoch}`,
-        malformedEmail: `plainaddress_${workerIndex}_${epoch}_qa.test`,
-      };
-    case 'TC-IAM-03-05':
-      return {
-        name: `QA Incomplete Syntax ${workerIndex}_${epoch}`,
-        missingDomainEmail: `user_${workerIndex}_${epoch}@`,
-        missingLocalPartEmail: '@qa.test',
-      };
-    case 'TC-IAM-03-06':
-      return {
-        name: `QA Blank Pass ${workerIndex}_${epoch}`,
-        email: `user_${workerIndex}_${epoch}@qa.test`,
-      };
-    case 'TC-IAM-03-07':
-      return {
-        name: `QA Blank Name ${workerIndex}_${epoch}`,
-        email: `user_${workerIndex}_${epoch}@qa.test`,
-      };
-    case 'TC-IAM-03-08':
-      return {
-        name: `QA Blank Address ${workerIndex}_${epoch}`,
-        email: `user_${workerIndex}_${epoch}@qa.test`,
-      };
-    case 'TC-IAM-03-09':
-      return {
-        name: `QA Blank Mobile ${workerIndex}_${epoch}`,
-        email: `user_${workerIndex}_${epoch}@qa.test`,
-      };
-    case 'TC-IAM-03-10':
-      return {
-        name: '   ',
-        email: `user_${workerIndex}_${epoch}@qa.test`,
-        password: 'Password@123',
-      };
-    default:
-      throw new Error(`Unsupported IAM-03 case: ${caseId}`);
-  }
-}
 
 test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
   test('TC-IAM-03-01 rejects blank signup name with native validation', async ({
@@ -95,7 +9,7 @@ test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
     loginPage,
     request,
   }, testInfo) => {
-    const data = buildTcIam03CaseData(testInfo.workerIndex, 'TC-IAM-03-01');
+    const data = buildCaseData(testInfo.workerIndex, 'TC-IAM-03-01');
     let unexpectedProgression = false;
 
     try {
@@ -149,7 +63,7 @@ test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
     homePage,
     loginPage,
   }, testInfo) => {
-    const data = buildTcIam03CaseData(testInfo.workerIndex, 'TC-IAM-03-02');
+    const data = buildCaseData(testInfo.workerIndex, 'TC-IAM-03-02');
 
     await homePage.open();
     await homePage.expectLoaded();
@@ -231,7 +145,7 @@ test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
     homePage,
     loginPage,
   }, testInfo) => {
-    const data = buildTcIam03CaseData(testInfo.workerIndex, 'TC-IAM-03-04');
+    const data = buildCaseData(testInfo.workerIndex, 'TC-IAM-03-04');
 
     await homePage.open();
     await homePage.expectLoaded();
@@ -268,7 +182,7 @@ test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
     homePage,
     loginPage,
   }, testInfo) => {
-    const data = buildTcIam03CaseData(testInfo.workerIndex, 'TC-IAM-03-05');
+    const data = buildCaseData(testInfo.workerIndex, 'TC-IAM-03-05');
 
     await homePage.open();
     await homePage.expectLoaded();
@@ -319,7 +233,7 @@ test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
     loginPage,
     accountInformationPage,
   }, testInfo) => {
-    const data = buildTcIam03CaseData(testInfo.workerIndex, 'TC-IAM-03-06');
+    const data = buildCaseData(testInfo.workerIndex, 'TC-IAM-03-06');
 
     await homePage.open();
     await homePage.expectLoaded();
@@ -363,7 +277,7 @@ test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
     loginPage,
     accountInformationPage,
   }, testInfo) => {
-    const data = buildTcIam03CaseData(testInfo.workerIndex, 'TC-IAM-03-07');
+    const data = buildCaseData(testInfo.workerIndex, 'TC-IAM-03-07');
 
     await homePage.open();
     await homePage.expectLoaded();
@@ -409,7 +323,7 @@ test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
     loginPage,
     accountInformationPage,
   }, testInfo) => {
-    const data = buildTcIam03CaseData(testInfo.workerIndex, 'TC-IAM-03-08');
+    const data = buildCaseData(testInfo.workerIndex, 'TC-IAM-03-08');
 
     await homePage.open();
     await homePage.expectLoaded();
@@ -487,7 +401,7 @@ test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
     loginPage,
     accountInformationPage,
   }, testInfo) => {
-    const data = buildTcIam03CaseData(testInfo.workerIndex, 'TC-IAM-03-09');
+    const data = buildCaseData(testInfo.workerIndex, 'TC-IAM-03-09');
 
     await homePage.open();
     await homePage.expectLoaded();
@@ -532,7 +446,7 @@ test.describe('TC-IAM-03 - Sign Up Form Validation', () => {
     accountCreatedPage,
     request,
   }, testInfo) => {
-    const data = buildTcIam03CaseData(testInfo.workerIndex, 'TC-IAM-03-10');
+    const data = buildCaseData(testInfo.workerIndex, 'TC-IAM-03-10');
     const badResponses: number[] = [];
     let accountCreated = false;
 

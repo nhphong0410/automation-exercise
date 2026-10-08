@@ -1,25 +1,8 @@
 import { test, expect } from '../../fixtures';
-import type { Page } from '@playwright/test';
 import { createRegistrationData } from '../../../data/user-data';
 import { cleanupAccount, seedAccount } from '../../../helpers/account-api';
-
-async function openLogin(homePage: { open: () => Promise<void>; expectLoaded: () => Promise<void>; openLogin: () => Promise<void> }, loginPage: { expectLoginLoaded: () => Promise<void> }): Promise<void> {
-  await homePage.open();
-  await homePage.expectLoaded();
-  await homePage.openLogin();
-  await loginPage.expectLoginLoaded();
-}
-
-function trackLoginSubmissions(page: Page): string[] {
-  const submissions: string[] = [];
-  page.on('request', (request) => {
-    const url = new URL(request.url());
-    if (request.method() === 'POST' && /\/(login|verifyLogin)$/i.test(url.pathname)) {
-      submissions.push(request.url());
-    }
-  });
-  return submissions;
-}
+import { openLoginPage } from '../../../helpers/session';
+import { trackLoginSubmissions } from '../../../helpers/login-validation';
 
 test.describe('TC-IAM-05 - Login With Incorrect Email Or Password', () => {
   test('TC-IAM-05-01 rejects a registered email with an incorrect password', async ({
@@ -33,7 +16,7 @@ test.describe('TC-IAM-05 - Login With Incorrect Email Or Password', () => {
     await seedAccount(request, data);
 
     try {
-      await openLogin(homePage, loginPage);
+      await openLoginPage(homePage, loginPage);
       await loginPage.login(data.email, 'WrongPassword@999');
 
       await expect(page).toHaveURL(/\/login$/);
@@ -55,7 +38,7 @@ test.describe('TC-IAM-05 - Login With Incorrect Email Or Password', () => {
   }, testInfo) => {
     const email = `nonexistent_${Date.now()}_${testInfo.workerIndex}@qa.test`;
 
-    await openLogin(homePage, loginPage);
+    await openLoginPage(homePage, loginPage);
     await loginPage.login(email, 'ArbitraryPassword@123');
 
     await expect(page).toHaveURL(/\/login$/);
@@ -74,7 +57,7 @@ test.describe('TC-IAM-05 - Login With Incorrect Email Or Password', () => {
   }) => {
     const submissions = trackLoginSubmissions(page);
 
-    await openLogin(homePage, loginPage);
+    await openLoginPage(homePage, loginPage);
     await loginPage.loginPasswordInput.fill('Password@123');
     await loginPage.loginButton.click();
 
@@ -105,7 +88,7 @@ test.describe('TC-IAM-05 - Login With Incorrect Email Or Password', () => {
     const submissions = trackLoginSubmissions(page);
 
     try {
-      await openLogin(homePage, loginPage);
+      await openLoginPage(homePage, loginPage);
       await loginPage.loginEmailInput.fill(data.email);
       await loginPage.loginButton.click();
 
@@ -135,7 +118,7 @@ test.describe('TC-IAM-05 - Login With Incorrect Email Or Password', () => {
   }) => {
     const submissions = trackLoginSubmissions(page);
 
-    await openLogin(homePage, loginPage);
+    await openLoginPage(homePage, loginPage);
     await loginPage.loginButton.click();
 
     const fieldStates = await Promise.all([
@@ -166,7 +149,7 @@ test.describe('TC-IAM-05 - Login With Incorrect Email Or Password', () => {
     const submissions = trackLoginSubmissions(page);
     const malformedEmails = ['plainaddress_qa.test', 'user_qa@'];
 
-    await openLogin(homePage, loginPage);
+    await openLoginPage(homePage, loginPage);
 
     for (const email of malformedEmails) {
       await loginPage.loginEmailInput.fill(email);
@@ -202,7 +185,7 @@ test.describe('TC-IAM-05 - Login With Incorrect Email Or Password', () => {
     let authenticated = false;
 
     try {
-      await openLogin(homePage, loginPage);
+      await openLoginPage(homePage, loginPage);
       await loginPage.login(data.email, 'WrongPassword@999');
 
       await expect(page).toHaveURL(/\/login$/);
