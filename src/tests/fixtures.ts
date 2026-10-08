@@ -2,6 +2,7 @@ import { test as base } from '@playwright/test';
 import { AccountCreatedPage } from '../pages/account-created.page';
 import { AccountInformationPage } from '../pages/account-information.page';
 import { AccountPage } from '../pages/account.page';
+import { CartPage } from '../pages/cart.page';
 import { HomePage } from '../pages/home.page';
 import { LoginPage } from '../pages/login.page';
 import { ProductsPage } from '../pages/products.page';
@@ -10,6 +11,7 @@ type PageFixtures = {
   accountCreatedPage: AccountCreatedPage;
   accountInformationPage: AccountInformationPage;
   accountPage: AccountPage;
+  cartPage: CartPage;
   homePage: HomePage;
   loginPage: LoginPage;
   productsPage: ProductsPage;
@@ -31,6 +33,9 @@ export const test = base.extend<PageFixtures>({
   },
   accountPage: async ({ page }, use) => {
     await use(new AccountPage(page));
+  },
+  cartPage: async ({ page }, use) => {
+    await use(new CartPage(page));
   },
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
