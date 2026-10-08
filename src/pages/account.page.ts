@@ -6,6 +6,7 @@ export class AccountPage {
   readonly deleteAccountLink: Locator;
   readonly signupLoginLink: Locator;
   readonly accountDeletedMessage: Locator;
+  readonly continueAfterDeletionLink: Locator;
 
   constructor(private readonly page: Page) {
     this.loggedInIndicator = page.getByText(/^Logged in as /);
@@ -13,6 +14,7 @@ export class AccountPage {
     this.deleteAccountLink = page.getByRole('link', { name: /delete account/i });
     this.signupLoginLink = page.locator('a[href="/login"]');
     this.accountDeletedMessage = page.locator('[data-qa="account-deleted"]');
+    this.continueAfterDeletionLink = page.locator('[data-qa="continue-button"]');
   }
 
   async expectLoggedInAs(name: string): Promise<void> {
@@ -29,6 +31,10 @@ export class AccountPage {
 
   async expectDeleted(): Promise<void> {
     await expect(this.accountDeletedMessage).toHaveText(/ACCOUNT DELETED!/i);
+  }
+
+  async continueAfterDeletion(): Promise<void> {
+    await this.continueAfterDeletionLink.click();
   }
 
   async expectNoAuthenticatedActions(): Promise<void> {

@@ -1,51 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { createRegistrationData } from '../../../data/user-data';
-
-const createSeedAccount = async ({
-  request,
-  data,
-}: {
-  request: any;
-  data: ReturnType<typeof createRegistrationData>;
-}) => {
-  const response = await request.post('/api/createAccount', {
-    form: {
-      name: data.name,
-      email: data.email,
-      password: data.password,
-      title: 'Mr',
-      firstname: data.firstName,
-      lastname: data.lastName,
-      company: data.company,
-      address1: data.address,
-      address2: data.address2,
-      country: data.country,
-      state: data.state,
-      city: data.city,
-      zipcode: data.zipcode,
-      mobile_number: data.mobileNumber,
-    },
-  });
-
-  const body = await response.json();
-  expect(response.status()).toBe(200);
-  expect(body.responseCode).toBe(201);
-
-  return data;
-};
-
-async function cleanupAccount(request: any, email: string, password: string): Promise<void> {
-  const response = await request.delete('/api/deleteAccount', {
-    form: {
-      email,
-      password,
-    },
-  });
-  const body = await response.json();
-
-  expect(response.status()).toBe(200);
-  expect([200, 404]).toContain(body.responseCode);
-}
+import { cleanupAccount, seedAccount } from '../../../helpers/account-api';
 
 test.describe('TC-IAM-02 - Register User With Already-Registered Email Address', () => {
   test('TC-IAM-02-01 blocks signup when the email already exists', async ({
@@ -56,7 +11,7 @@ test.describe('TC-IAM-02 - Register User With Already-Registered Email Address',
   }, testInfo) => {
     const data = createRegistrationData(testInfo.workerIndex);
 
-    await createSeedAccount({ request, data });
+    await seedAccount(request, data);
 
     try {
       await homePage.open();
@@ -73,7 +28,7 @@ test.describe('TC-IAM-02 - Register User With Already-Registered Email Address',
       await expect(page).toHaveURL(/\/signup$/);
       await expect(page.getByText(/Logged in as /i)).not.toBeVisible();
     } finally {
-      await cleanupAccount(request, data.email, data.password);
+      await cleanupAccount(request, data);
     }
   });
 
@@ -86,7 +41,7 @@ test.describe('TC-IAM-02 - Register User With Already-Registered Email Address',
     const data = createRegistrationData(testInfo.workerIndex);
     const alternateName = `Different Alternate User ${Date.now()}`;
 
-    await createSeedAccount({ request, data });
+    await seedAccount(request, data);
 
     try {
       await homePage.open();
@@ -103,7 +58,7 @@ test.describe('TC-IAM-02 - Register User With Already-Registered Email Address',
       await expect(page).toHaveURL(/\/signup$/);
       await expect(page.getByText(/Logged in as /i)).not.toBeVisible();
     } finally {
-      await cleanupAccount(request, data.email, data.password);
+      await cleanupAccount(request, data);
     }
   });
 
@@ -118,7 +73,7 @@ test.describe('TC-IAM-02 - Register User With Already-Registered Email Address',
     const recoveryEmail = `recovery_${Date.now()}_${testInfo.workerIndex}@qa.test`;
     const recoveryName = `Recovery User ${Date.now()}`;
 
-    await createSeedAccount({ request, data: seededData });
+    await seedAccount(request, seededData);
 
     try {
       await homePage.open();
@@ -137,10 +92,10 @@ test.describe('TC-IAM-02 - Register User With Already-Registered Email Address',
       await expect(page.getByRole('heading', { name: 'Enter Account Information' })).toBeVisible();
       await expect(accountInformationPage.passwordInput).toBeVisible();
     } finally {
-      await cleanupAccount(request, seededData.email, seededData.password);
+      await cleanupAccount(request, seededData);
 
       if (recoveryEmail) {
-        await cleanupAccount(request, recoveryEmail, 'Password@123');
+        await cleanupAccount(request, { email: recoveryEmail, password: 'Password@123' });
       }
     }
   });
@@ -154,7 +109,7 @@ test.describe('TC-IAM-02 - Register User With Already-Registered Email Address',
   }, testInfo) => {
     const data = createRegistrationData(testInfo.workerIndex);
 
-    await createSeedAccount({ request, data });
+    await seedAccount(request, data);
 
     try {
       await homePage.open();
@@ -185,7 +140,7 @@ test.describe('TC-IAM-02 - Register User With Already-Registered Email Address',
       await expect(page.getByRole('heading', { name: 'Enter Account Information' })).toBeVisible();
       await expect(accountInformationPage.passwordInput).toBeVisible();
     } finally {
-      await cleanupAccount(request, data.email, data.password);
+      await cleanupAccount(request, data);
     }
   });
 });

@@ -1,5 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { createRegistrationData } from '../../../data/user-data';
+import { cleanupAccount } from '../../../helpers/account-api';
 import registrationTestData from '../../../data/tc-iam-01.json';
 import type { DateOfBirth } from '../../../pages/account-information.page';
 
@@ -42,16 +43,7 @@ async function cleanupCreatedAccount({
   }
 
   if (accountCreated) {
-    const response = await request.delete('/api/deleteAccount', {
-      form: {
-        email: data.email,
-        password: data.password,
-      },
-    });
-    const body = await response.json();
-
-    expect(response.status()).toBe(200);
-    expect(body.responseCode).toBe(200);
+    await cleanupAccount(request, data);
   }
 
   return false;
