@@ -14,9 +14,7 @@ Playwright and TypeScript automation for [Automation Exercise](https://automatio
 ├── docs/
 │   ├── automation-exercise-test-design.md
 │   ├── area-1/
-│   │   ├── iam-01/
-│   │   ├── iam-02/
-│   │   └── iam-05/
+│   │   └── iam-01/ ... iam-08/
 │   ├── area-2/
 │   │   └── cat-01/ ... cat-07/
 │   ├── area-3/
@@ -31,24 +29,45 @@ Playwright and TypeScript automation for [Automation Exercise](https://automatio
 │   ├── components/
 │   ├── data/
 │   │   ├── tc-iam-01.json
+│   │   ├── tc-iam-03.ts
 │   │   └── user-data.ts
+│   ├── helpers/
+│   │   ├── account-api.ts
+│   │   ├── account-lifecycle.ts
+│   │   ├── login-validation.ts
+│   │   └── session.ts
 │   ├── pages/
 │   │   ├── account-created.page.ts
 │   │   ├── account-information.page.ts
 │   │   ├── account.page.ts
+│   │   ├── cart.page.ts
 │   │   ├── home.page.ts
 │   │   ├── login.page.ts
+│   │   ├── product-details.page.ts
 │   │   └── products.page.ts
 │   └── tests/
 │       ├── fixtures.ts
 │       ├── api/
 │       │   └── api.spec.ts
 │       └── e2e/
+│           ├── cat/
+│           │   └── tc-cat-01.spec.ts ... tc-cat-07.spec.ts
 │           └── iam/
-│               └── tc-iam-01.spec.ts
+│               └── tc-iam-01.spec.ts ... tc-iam-08.spec.ts
 ├── test-results/
 └── playwright-report/
 ```
+
+## Implemented automation coverage
+
+The executable suite currently covers:
+
+- **IAM:** registration, duplicate email, signup and account validation, login, logout, account deletion, and session persistence (`TC-IAM-01` through `TC-IAM-08`).
+- **Catalog and cart:** adding and removing products, cart quantities and totals, cart persistence across authentication, product filtering, and product reviews (`TC-CAT-01` through `TC-CAT-07`).
+- **API smoke:** product-list contract validation through `/api/productsList`.
+- **Design coverage:** detailed plans for IAM, catalog, cart, checkout, utilities, and REST API areas remain in `docs/`.
+
+Tests tagged with `@smoke` can be run separately with `npm run test:smoke`.
 
 ## Setup
 
@@ -81,7 +100,30 @@ $env:BASE_URL = 'https://automationexercise.com'
 npm test
 ```
 
-The Playwright config also uses a shared fixture to block known ad-network traffic, isolates browser contexts, and stores screenshots, traces, and videos on failure.
+The Playwright config uses:
+
+- Chromium desktop browser only
+- Fresh browser context per test
+- One worker locally and serially by default
+- CI retries: 2 retries when `CI` is set
+- HTML and list reporters
+- Trace on first retry
+- Screenshot and video only/retained on failure
+- `--disable-blink-features=AutomationControlled` during Chromium launch
+- The shared fixture to block DoubleClick, Google Ad Services, and Google Syndication traffic
+
+Test isolation is important because the SUT depends on cookies and cart state. Account and cart setup/cleanup are handled in the relevant tests and helpers.
+
+## Architecture
+
+- **Page Object Model:** page-specific selectors and actions live in [src/pages](src/pages).
+- **Shared fixture:** [src/tests/fixtures.ts](src/tests/fixtures.ts) exposes reusable page objects and applies ad-network blocking.
+- **Test data:** [src/data/user-data.ts](src/data/user-data.ts) creates unique registration identities for each worker/run.
+- **API helpers:** [src/helpers/account-api.ts](src/helpers/account-api.ts) supports account seeding and cleanup through the REST API.
+- **Lifecycle helpers:** [src/helpers/account-lifecycle.ts](src/helpers/account-lifecycle.ts) provides UI/API teardown and guest-state handling.
+- **Session helpers:** [src/helpers/session.ts](src/helpers/session.ts) supports login, logout, and authenticated session setup.
+
+The project separates UI tests under [src/tests/e2e](src/tests/e2e) and API tests under [src/tests/api](src/tests/api).
 
 ## Design and documentation model
 
@@ -99,15 +141,17 @@ The repo is intentionally documentation-first:
 - Keep UI and API tests in separate folders under [src/tests](src/tests).
 - Prefer explicit assertions and `try/finally` cleanup when tests create accounts or mutate cart state.
 - For API checks, assert both the HTTP status and the JSON `responseCode` where the SUT returns application-level result codes in the body.
+- Keep browser authentication in browser contexts and API setup/cleanup in request contexts.
 
 ## Current repo state
 
-The project is currently in a partial implementation state:
+The project is in an incremental implementation state:
 
-- The working example for the UI flow is the IAM registration implementation in [src/tests/e2e/iam/tc-iam-01.spec.ts](src/tests/e2e/iam/tc-iam-01.spec.ts).
+- IAM registration and account/session flows are implemented across `TC-IAM-01` to `TC-IAM-08`.
+- Catalog and cart flows are implemented across `TC-CAT-01` to `TC-CAT-07`.
 - The API smoke flow is implemented in [src/tests/api/api.spec.ts](src/tests/api/api.spec.ts).
-- The detailed design set for catalog, cart, checkout, utilities, and API scenarios is created under the `docs/area-*` folders.
-- The automation scope is broader than the currently implemented code, and the docs are intended to guide subsequent test implementation.
+- The detailed design set for checkout, utilities, and remaining API scenarios is created under the `docs/area-*` folders.
+- The executable suite is less extensive than the full documentation, so the design documents are intended to guide subsequent implementation.
 
 ## Helpful references
 
